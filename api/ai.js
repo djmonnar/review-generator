@@ -81,3 +81,4 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message || 'AI 서버와 통신 중 문제가 발생했습니다.' });
     }
 }
+
