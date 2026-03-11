@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>배민 리뷰 답글 자동 생성기 by 짓마케팅</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
+    <style>
+        @import url('[https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap)');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
+        .baemin-color { color: #2ac1bc; }
+        .baemin-bg { background-color: #2ac1bc; }
+        .baemin-bg:hover { background-color: #23a39e; }
+        .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #2ac1bc; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <!-- 메인 컨테이너 -->
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+        <div class="baemin-bg p-6 text-white text-center">
+            <span class="bg-white text-[#2ac1bc] text-xs font-bold px-2 py-1 rounded-full mb-3 inline-block">짓마케팅 제공</span>
+            <h1 class="text-2xl font-bold mb-2">리뷰 답글 자동 생성기</h1>
+            <p class="text-sm opacity-90">사장님, 이제 리뷰 스트레스 받지 마세요!<br>복붙 한 번이면 AI가 찰떡같이 써드립니다.</p>
+        </div>
+
+        <div class="p-6 space-y-5">
+            <!-- 별점 -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">고객님이 남긴 별점 ⭐</label>
+                <div class="flex gap-2">
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="5" class="peer sr-only" checked><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">5점</div></label>
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="4" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">4점</div></label>
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="3" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-yellow-500 peer-checked:text-white transition-all">3점</div></label>
+                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="1" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-red-500 peer-checked:text-white transition-all">1~2점</div></label>
+                </div>
+            </div>
+
+            <!-- 리뷰 원문 -->
+            <div>
+                <label for="reviewText" class="block text-sm font-semibold text-gray-700 mb-2">고객 리뷰 통째로 복사 붙여넣기 ✍️</label>
+                <textarea id="reviewText" rows="5" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc] resize-none text-sm" placeholder="닉네임, 날짜, 주문횟수, 리뷰 내용까지 전체를 드래그해서 붙여넣어 주세요!"></textarea>
+            </div>
+
+            <!-- 답변 분위기 -->
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">사장님 멘트 분위기 🎭</label>
+                <div class="flex flex-wrap gap-2">
+                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="친절하고 다정한 동네 단골집 스타일" class="peer sr-only" checked><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">😊 친절함</div></label>
+                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="귀엽고 발랄한 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">🥰 귀여움</div></label>
+                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="격식있고 극도로 공손한 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">👔 공손함</div></label>
+                    <label class="cursor-pointer flex-1 min-w-[45%]"><input type="radio" name="tone" value="유쾌하고 재치있는 센스만점 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">😎 유쾌/재치</div></label>
+                    <label class="cursor-pointer flex-1 min-w-[45%]"><input type="radio" name="tone" value="진심이 묻어나는 따뜻하고 감동적인 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">💖 따뜻함</div></label>
+                </div>
+            </div>
+
+            <!-- 추가 멘트 -->
+            <div>
+                <label for="extraInfo" class="block text-sm font-semibold text-gray-700 mb-2">사장님 추가 멘트 (선택사항) 💡</label>
+                <div class="flex gap-2">
+                    <input type="text" id="extraInfo" class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc]" placeholder="예: 콜라 서비스">
+                    <button id="polishBtn" onclick="polishExtraInfo()" class="bg-[#2ac1bc] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#23a39e] transition-all whitespace-nowrap text-sm">✨ AI 다듬기</button>
+                </div>
+            </div>
+
+            <!-- 버튼 및 에러 -->
+            <button id="generateBtn" onclick="generateReply()" class="w-full baemin-bg text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center">
+                <span>AI 답글 생성하기 🚀</span>
+            </button>
+            <p id="errorMsg" class="text-red-500 text-sm text-center hidden mt-2"></p>
+        </div>
+
+        <!-- 결과 영역 -->
+        <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-100 hidden">
+            <!-- 분석 리포트 -->
+            <div class="mb-5 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-800 mb-3">✨ AI 고객 리뷰 분석</h3>
+                <div class="grid grid-cols-3 gap-2 text-sm">
+                    <div class="bg-blue-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-blue-500 font-semibold mb-1">유형</span><span id="analysisCustomerType" class="font-bold text-gray-700">분석중</span></div>
+                    <div class="bg-pink-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-pink-500 font-semibold mb-1">감정</span><span id="analysisSentiment" class="font-bold text-gray-700">분석중</span></div>
+                    <div class="bg-green-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-green-500 font-semibold mb-1">키워드</span><span id="analysisKeywords" class="font-bold text-gray-700 text-xs">분석중</span></div>
+                </div>
+            </div>
+
+            <label class="block text-sm font-semibold text-gray-700 mb-2">✨ 생성된 답글</label>
+            <textarea id="resultText" rows="6" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc] resize-none bg-white text-gray-800 leading-relaxed"></textarea>
+            
+            <button onclick="copyToClipboard()" class="w-full mt-3 bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center gap-2">
+                <i class="fas fa-copy"></i> 복사하기
+            </button>
+            <p id="copySuccess" class="text-green-600 text-sm text-center font-semibold mt-2 hidden">복사되었습니다!</p>
+        </div>
+    </div>
+
+    <!-- 스크립트: API 키가 없고 Vercel 백엔드(/api/ai)로 요청합니다. -->
+    <script>
+        async function callBackend(payloadData) {
+            const response = await fetch('/api/ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payloadData)
+            });
+            if (!response.ok) throw new Error('서버 에러');
+            return await response.json();
+        }
+
+        async function polishExtraInfo() {
+            const input = document.getElementById('extraInfo');
+            const btn = document.getElementById('polishBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            if (!input.value.trim()) return;
+
+            errorMsg.classList.add('hidden');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<div class="loader" style="width:14px;height:14px;border-width:2px;margin:0;"></div>`;
+            btn.disabled = true;
+
+            try {
+                const data = await callBackend({ action: 'polish', text: input.value.trim() });
+                input.value = data.result;
+            } catch (error) {
+                errorMsg.textContent = "다듬기에 실패했습니다.";
+                errorMsg.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+
+        async function generateReply() {
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            const tone = document.querySelector('input[name="tone"]:checked').value;
+            const reviewText = document.getElementById('reviewText').value.trim();
+            const extraInfo = document.getElementById('extraInfo').value.trim();
+            
+            const btn = document.getElementById('generateBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const resultSection = document.getElementById('resultSection');
+
+            if (!reviewText) { errorMsg.textContent = "리뷰를 입력해주세요!"; errorMsg.classList.remove('hidden'); return; }
+
+            errorMsg.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            btn.innerHTML = `<div class="loader"></div> AI 작성 중...`;
+            btn.disabled = true;
+
+            try {
+                const data = await callBackend({ action: 'generate', rating, tone, reviewText, extraInfo });
+                
+                document.getElementById('resultText').value = data.result.reply;
+                document.getElementById('analysisCustomerType').textContent = data.result.customerType;
+                document.getElementById('analysisSentiment').textContent = data.result.sentiment;
+                document.getElementById('analysisKeywords').textContent = data.result.keywords.join(', ');
+                
+                resultSection.classList.remove('hidden');
+            } catch (error) {
+                errorMsg.textContent = "오류가 발생했습니다.";
+                errorMsg.classList.remove('hidden');
+            } finally {
+                btn.innerHTML = `<span>AI 답글 생성하기 🚀</span>`;
+                btn.disabled = false;
+            }
+        }
+
+        function copyToClipboard() {
+            const textToCopy = document.getElementById('resultText').value;
+            const successMsg = document.getElementById('copySuccess');
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                successMsg.classList.remove('hidden');
+                setTimeout(() => successMsg.classList.add('hidden'), 2000);
+            } catch (err) {
+                alert('복사 실패!');
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>
