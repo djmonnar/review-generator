@@ -4,131 +4,223 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>배민 리뷰 답글 자동 생성기 by 짓마케팅</title>
-    <!-- 디자인(CSS)을 불러오는 정상적인 URL로 수정되었습니다 -->
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
+    <!-- 정상적인 URL 로드 (마크다운 오류 제거됨) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('[https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap)');
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
         .baemin-color { color: #2ac1bc; }
         .baemin-bg { background-color: #2ac1bc; }
         .baemin-bg:hover { background-color: #23a39e; }
-        .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #2ac1bc; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        .loader { 
+            border: 3px solid #f3f3f3; 
+            border-radius: 50%; 
+            border-top: 3px solid #2ac1bc; 
+            width: 20px; 
+            height: 20px; 
+            animation: spin 1s linear infinite; 
+            display: inline-block; 
+            vertical-align: middle; 
+            margin-right: 8px; 
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
     <!-- 메인 컨테이너 -->
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+        
+        <!-- 헤더 영역 -->
         <div class="baemin-bg p-6 text-white text-center">
             <span class="bg-white text-[#2ac1bc] text-xs font-bold px-2 py-1 rounded-full mb-3 inline-block">짓마케팅 제공</span>
             <h1 class="text-2xl font-bold mb-2">리뷰 답글 자동 생성기</h1>
             <p class="text-sm opacity-90">사장님, 이제 리뷰 스트레스 받지 마세요!<br>복붙 한 번이면 AI가 찰떡같이 써드립니다.</p>
         </div>
 
+        <!-- 입력 폼 영역 -->
         <div class="p-6 space-y-5">
-            <!-- 별점 -->
+            
+            <!-- 1. 별점 선택 -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">고객님이 남긴 별점 ⭐</label>
                 <div class="flex gap-2">
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="5" class="peer sr-only" checked><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">5점</div></label>
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="4" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">4점</div></label>
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="3" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-yellow-500 peer-checked:text-white transition-all">3점</div></label>
-                    <label class="flex-1 cursor-pointer"><input type="radio" name="rating" value="1" class="peer sr-only"><div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-red-500 peer-checked:text-white transition-all">1~2점</div></label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="rating" value="5" class="peer sr-only" checked>
+                        <div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">5점</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="rating" value="4" class="peer sr-only">
+                        <div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">4점</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="rating" value="3" class="peer sr-only">
+                        <div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-yellow-500 peer-checked:text-white peer-checked:border-yellow-500 transition-all font-medium">3점</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="rating" value="1" class="peer sr-only">
+                        <div class="text-center py-2 border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition-all font-medium">1~2점</div>
+                    </label>
                 </div>
             </div>
 
-            <!-- 리뷰 원문 -->
+            <!-- 2. 리뷰 원문 입력 -->
             <div>
                 <label for="reviewText" class="block text-sm font-semibold text-gray-700 mb-2">고객 리뷰 통째로 복사 붙여넣기 ✍️</label>
-                <textarea id="reviewText" rows="5" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc] resize-none text-sm" placeholder="닉네임, 날짜, 주문횟수, 리뷰 내용까지 전체를 드래그해서 붙여넣어 주세요!"></textarea>
+                <textarea id="reviewText" rows="5" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc] resize-none text-sm" placeholder="배달앱에서 닉네임, 날짜, 주문횟수, 리뷰 내용까지 전체를 드래그해서 붙여넣어 주세요!&#10;(예: 나경 / 2026년 3월 8일 / 1회 주문 고객 / 치킨안에든 누룽지 넘 맛나요)"></textarea>
             </div>
 
-            <!-- 답변 분위기 -->
+            <!-- 3. 답변 분위기 선택 -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">사장님 멘트 분위기 🎭</label>
                 <div class="flex flex-wrap gap-2">
-                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="친절하고 다정한 동네 단골집 스타일" class="peer sr-only" checked><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">😊 친절함</div></label>
-                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="귀엽고 발랄한 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">🥰 귀여움</div></label>
-                    <label class="cursor-pointer flex-1 min-w-[28%]"><input type="radio" name="tone" value="격식있고 극도로 공손한 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">👔 공손함</div></label>
-                    <label class="cursor-pointer flex-1 min-w-[45%]"><input type="radio" name="tone" value="유쾌하고 재치있는 센스만점 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">😎 유쾌/재치</div></label>
-                    <label class="cursor-pointer flex-1 min-w-[45%]"><input type="radio" name="tone" value="진심이 묻어나는 따뜻하고 감동적인 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-300 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white transition-all">💖 따뜻함</div></label>
+                    <label class="cursor-pointer flex-1 min-w-[28%]">
+                        <input type="radio" name="tone" value="친절하고 다정한 동네 단골집 스타일" class="peer sr-only" checked>
+                        <div class="text-center py-2 text-sm border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">😊 친절함</div>
+                    </label>
+                    <label class="cursor-pointer flex-1 min-w-[28%]">
+                        <input type="radio" name="tone" value="귀엽고 발랄한, 이모지가 듬뿍 들어간 스타일" class="peer sr-only">
+                        <div class="text-center py-2 text-sm border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">🥰 귀여움</div>
+                    </label>
+                    <label class="cursor-pointer flex-1 min-w-[28%]">
+                        <input type="radio" name="tone" value="격식있고 극도로 공손한, 고급 레스토랑 스타일" class="peer sr-only">
+                        <div class="text-center py-2 text-sm border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">👔 공손함</div>
+                    </label>
+                    <label class="cursor-pointer flex-1 min-w-[45%]">
+                        <input type="radio" name="tone" value="유쾌하고 재치있는 센스만점 젊은 사장님 스타일" class="peer sr-only">
+                        <div class="text-center py-2 text-sm border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">😎 유쾌/재치</div>
+                    </label>
+                    <label class="cursor-pointer flex-1 min-w-[45%]">
+                        <input type="radio" name="tone" value="진심이 묻어나는 따뜻하고 감동적인 스타일" class="peer sr-only">
+                        <div class="text-center py-2 text-sm border border-gray-300 text-gray-600 rounded-lg peer-checked:bg-[#2ac1bc] peer-checked:text-white peer-checked:border-[#2ac1bc] transition-all font-medium">💖 따뜻함</div>
+                    </label>
                 </div>
             </div>
 
-            <!-- 추가 멘트 -->
+            <!-- 4. 추가 멘트 (AI 다듬기 기능 포함) -->
             <div>
                 <label for="extraInfo" class="block text-sm font-semibold text-gray-700 mb-2">사장님 추가 멘트 (선택사항) 💡</label>
                 <div class="flex gap-2">
-                    <input type="text" id="extraInfo" class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc]" placeholder="예: 콜라 서비스">
-                    <button id="polishBtn" onclick="polishExtraInfo()" class="bg-[#2ac1bc] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#23a39e] transition-all whitespace-nowrap text-sm">✨ AI 다듬기</button>
+                    <input type="text" id="extraInfo" class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc]" placeholder="예: 콜라 서비스, 신메뉴 출시 등">
+                    <button id="polishBtn" onclick="polishExtraInfo()" class="bg-[#2ac1bc] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#23a39e] transition-all whitespace-nowrap flex items-center gap-1 shadow-sm text-sm">
+                        ✨ AI 다듬기
+                    </button>
                 </div>
+                <p class="text-xs text-gray-500 mt-2">짧게 메모하고 '✨ AI 다듬기'를 누르면 예쁜 문장으로 바꿔줍니다!</p>
             </div>
 
-            <!-- 버튼 및 에러 -->
-            <button id="generateBtn" onclick="generateReply()" class="w-full baemin-bg text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center">
+            <!-- 생성 버튼 -->
+            <button id="generateBtn" onclick="generateReply()" class="w-full baemin-bg text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center mt-4">
                 <span>AI 답글 생성하기 🚀</span>
             </button>
             <p id="errorMsg" class="text-red-500 text-sm text-center hidden mt-2"></p>
         </div>
 
-        <!-- 결과 영역 -->
+        <!-- 결과 출력 영역 (초기엔 숨김) -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-100 hidden">
-            <!-- 분석 리포트 -->
+            
+            <!-- AI 리뷰 분석 대시보드 -->
             <div class="mb-5 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <h3 class="text-sm font-bold text-gray-800 mb-3">✨ AI 고객 리뷰 분석</h3>
+                <h3 class="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
+                    <span class="text-[#2ac1bc]"><i class="fas fa-chart-pie"></i></span> 
+                    ✨ AI 고객 리뷰 분석
+                </h3>
                 <div class="grid grid-cols-3 gap-2 text-sm">
-                    <div class="bg-blue-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-blue-500 font-semibold mb-1">유형</span><span id="analysisCustomerType" class="font-bold text-gray-700">분석중</span></div>
-                    <div class="bg-pink-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-pink-500 font-semibold mb-1">감정</span><span id="analysisSentiment" class="font-bold text-gray-700">분석중</span></div>
-                    <div class="bg-green-50 p-2 rounded-lg text-center break-keep"><span class="block text-xs text-green-500 font-semibold mb-1">키워드</span><span id="analysisKeywords" class="font-bold text-gray-700 text-xs">분석중</span></div>
+                    <div class="bg-blue-50 p-2 md:p-3 rounded-lg text-center break-keep">
+                        <span class="block text-xs text-blue-500 font-semibold mb-1">고객 유형</span>
+                        <span id="analysisCustomerType" class="font-bold text-gray-700 text-sm md:text-base">분석중...</span>
+                    </div>
+                    <div class="bg-pink-50 p-2 md:p-3 rounded-lg text-center break-keep">
+                        <span class="block text-xs text-pink-500 font-semibold mb-1">감정 상태</span>
+                        <span id="analysisSentiment" class="font-bold text-gray-700 text-sm md:text-base">분석중...</span>
+                    </div>
+                    <div class="bg-green-50 p-2 md:p-3 rounded-lg text-center break-keep">
+                        <span class="block text-xs text-green-500 font-semibold mb-1">핵심 키워드</span>
+                        <span id="analysisKeywords" class="font-bold text-gray-700 text-xs md:text-sm">분석중...</span>
+                    </div>
                 </div>
             </div>
 
-            <label class="block text-sm font-semibold text-gray-700 mb-2">✨ 생성된 답글</label>
+            <!-- 생성된 답글 -->
+            <label class="block text-sm font-semibold text-gray-700 mb-2">✨ 생성된 답글 (수정 가능)</label>
             <textarea id="resultText" rows="6" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#2ac1bc] resize-none bg-white text-gray-800 leading-relaxed"></textarea>
             
             <button onclick="copyToClipboard()" class="w-full mt-3 bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-lg transition-all flex justify-center items-center gap-2">
-                <i class="fas fa-copy"></i> 복사하기
+                <i class="fas fa-copy"></i> 답글 복사하기
             </button>
-            <p id="copySuccess" class="text-green-600 text-sm text-center font-semibold mt-2 hidden">복사되었습니다!</p>
+            <p id="copySuccess" class="text-green-600 text-sm text-center font-semibold mt-2 hidden">복사되었습니다! 배달앱에 붙여넣기 하세요.</p>
         </div>
     </div>
 
-    <!-- 스크립트: API 키가 없고 Vercel 백엔드(/api/ai)로 요청합니다. -->
+    <!-- 브랜딩 -->
+    <div class="mt-8 text-center text-gray-500 text-sm">
+        <p>매출을 올리는 진짜 마케팅, <span class="font-bold text-gray-700">짓마케팅</span></p>
+    </div>
+
+    <!-- 로직 스크립트 (Canvas 환경 전용 브라우저 직접 호출) -->
     <script>
-        async function callBackend(payloadData) {
-            const response = await fetch('/api/ai', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadData)
-            });
-            if (!response.ok) throw new Error('서버 에러');
-            return await response.json();
-        }
+        // Canvas 환경에서 자동으로 키가 주입됩니다.
+        const apiKey = ""; 
 
-        async function polishExtraInfo() {
-            const input = document.getElementById('extraInfo');
-            const btn = document.getElementById('polishBtn');
-            const errorMsg = document.getElementById('errorMsg');
-            if (!input.value.trim()) return;
-
-            errorMsg.classList.add('hidden');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = `<div class="loader" style="width:14px;height:14px;border-width:2px;margin:0;"></div>`;
-            btn.disabled = true;
-
-            try {
-                const data = await callBackend({ action: 'polish', text: input.value.trim() });
-                input.value = data.result;
-            } catch (error) {
-                errorMsg.textContent = "다듬기에 실패했습니다.";
-                errorMsg.classList.remove('hidden');
-            } finally {
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
+        // 공통 Fetch 함수 (에러 시 재시도 로직 포함)
+        async function fetchWithRetry(url, payload, retries = 3) {
+            const delays = [1000, 2000, 4000];
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
             }
         }
 
+        // 1. AI 추가 멘트 다듬기 기능
+        async function polishExtraInfo() {
+            const extraInfoInput = document.getElementById('extraInfo');
+            const polishBtn = document.getElementById('polishBtn');
+            const errorMsg = document.getElementById('errorMsg');
+            const rawText = extraInfoInput.value.trim();
+
+            if (!rawText) {
+                errorMsg.textContent = "다듬을 멘트를 간략히 입력해주세요! (예: 콜라 서비스)";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            const originalBtnHtml = polishBtn.innerHTML;
+            polishBtn.innerHTML = `<div class="loader" style="width:14px;height:14px;border-width:2px;margin-right:0;"></div>`;
+            polishBtn.disabled = true;
+
+            const systemPrompt = "당신은 배달 식당 사장님을 돕는 센스있는 마케터입니다. 사장님이 대충 적은 메모를, 배달앱 리뷰 답글에 자연스럽게 이어질 수 있는 친절하고 다정한 1~2문장의 안내 멘트로 예쁘게 다듬어주세요. 이모지도 1~2개 섞어주세요.";
+            const userPrompt = `사장님 메모: "${rawText}"\n이것을 고객에게 전하는 리뷰 답글용 문장으로 예쁘게 변환해주세요.`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const data = await fetchWithRetry(url, payload);
+                extraInfoInput.value = data.candidates[0].content.parts[0].text.trim();
+            } catch (error) {
+                errorMsg.textContent = "멘트 다듬기에 실패했습니다. 다시 시도해주세요.";
+                errorMsg.classList.remove('hidden');
+            } finally {
+                polishBtn.innerHTML = originalBtnHtml;
+                polishBtn.disabled = false;
+            }
+        }
+
+        // 2. 리뷰 자동 생성 및 분석 기능
         async function generateReply() {
             const rating = document.querySelector('input[name="rating"]:checked').value;
             const tone = document.querySelector('input[name="tone"]:checked').value;
@@ -139,31 +231,74 @@
             const errorMsg = document.getElementById('errorMsg');
             const resultSection = document.getElementById('resultSection');
 
-            if (!reviewText) { errorMsg.textContent = "리뷰를 입력해주세요!"; errorMsg.classList.remove('hidden'); return; }
+            if (!reviewText) {
+                errorMsg.textContent = "고객 리뷰 원문을 입력해주세요!";
+                errorMsg.classList.remove('hidden');
+                return;
+            }
 
             errorMsg.classList.add('hidden');
             resultSection.classList.add('hidden');
-            btn.innerHTML = `<div class="loader"></div> AI 작성 중...`;
+            btn.innerHTML = `<div class="loader"></div> AI가 고민하며 글을 쓰는 중...`;
             btn.disabled = true;
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            const systemPrompt = `당신은 배달 앱 리뷰 답글을 전문적으로 작성하는 식당 사장님이자, 리뷰 분석가입니다. 
+제공되는 정보를 바탕으로 고객 리뷰를 분석하고, 완벽한 리뷰 답글을 작성해주세요.
+
+[작성 원칙]
+1. 고객 분석: 제공된 리뷰 원문 전체 내용에서 '고객 닉네임'과 '주문 횟수(예: 1회 주문, N개월 누적 주문 등)'를 지능적으로 파악하여 첫인사에 자연스럽게 활용하세요.
+2. 말투 적용: 사용자가 선택한 [답변 분위기]를 완벽하게 반영하여 그에 맞는 단어와 이모지를 사용하세요.
+3. 대응: 별점이 1~3점일 경우 변명보다는 죄송한 마음을 먼저 전하고 개선을 약속하세요. 4~5점은 고객의 리뷰 내용에 폭풍 공감하며 감사를 전하세요.
+4. 분량: 모바일에서 읽기 편하도록 3~5문장 내외로 작성하고, 줄바꿈을 적극적으로 활용하세요.
+5. 금지사항: AI가 쓴 것 같은 기계적인 연결어("결론적으로", "요약하자면")는 절대 금지합니다. 진짜 사람처럼 자연스럽게 작성하세요.`;
+
+            const userPrompt = `[요청된 답변 분위기]: ${tone}\n[고객 별점]: ${rating}점\n[고객 리뷰 원문 (통째로 복사됨)]:\n${reviewText}\n${extraInfo ? `\n[사장님 추가 강조사항]: ${extraInfo}` : ''}`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            // JSON 형태의 구조화된 응답 요청
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            reply: { type: "STRING", description: "작성된 리뷰 답글 본문" },
+                            customerType: { type: "STRING", description: "고객 주문 횟수를 기반으로 한 짧은 요약 (예: 첫 주문, 3회 단골 등)" },
+                            sentiment: { type: "STRING", description: "리뷰에서 느껴지는 감정 (예: 매우 만족, 약간 아쉬움 등)" },
+                            keywords: { type: "ARRAY", items: { type: "STRING" }, description: "리뷰 내용 중 핵심 키워드 2~3개 (예: 맛있다, 배달빠름)" }
+                        }
+                    }
+                }
+            };
 
             try {
-                const data = await callBackend({ action: 'generate', rating, tone, reviewText, extraInfo });
+                const data = await fetchWithRetry(url, payload);
+                const resultJson = JSON.parse(data.candidates[0].content.parts[0].text);
                 
-                document.getElementById('resultText').value = data.result.reply;
-                document.getElementById('analysisCustomerType').textContent = data.result.customerType;
-                document.getElementById('analysisSentiment').textContent = data.result.sentiment;
-                document.getElementById('analysisKeywords').textContent = data.result.keywords.join(', ');
+                // UI 업데이트
+                document.getElementById('resultText').value = resultJson.reply;
+                document.getElementById('analysisCustomerType').textContent = resultJson.customerType;
+                document.getElementById('analysisSentiment').textContent = resultJson.sentiment;
+                document.getElementById('analysisKeywords').textContent = resultJson.keywords.join(', ');
                 
                 resultSection.classList.remove('hidden');
+                resultSection.scrollIntoView({ behavior: 'smooth' });
             } catch (error) {
-                errorMsg.textContent = "오류가 발생했습니다.";
+                errorMsg.textContent = "오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
                 errorMsg.classList.remove('hidden');
+                console.error("API Error:", error);
             } finally {
                 btn.innerHTML = `<span>AI 답글 생성하기 🚀</span>`;
                 btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
             }
         }
 
+        // 3. 복사 기능
         function copyToClipboard() {
             const textToCopy = document.getElementById('resultText').value;
             const successMsg = document.getElementById('copySuccess');
@@ -176,13 +311,12 @@
             try {
                 document.execCommand('copy');
                 successMsg.classList.remove('hidden');
-                setTimeout(() => successMsg.classList.add('hidden'), 2000);
+                setTimeout(() => { successMsg.classList.add('hidden'); }, 2000);
             } catch (err) {
-                alert('복사 실패!');
+                alert('복사에 실패했습니다. 직접 텍스트를 선택하여 복사해주세요.');
             }
             document.body.removeChild(textArea);
         }
     </script>
 </body>
 </html>
-
