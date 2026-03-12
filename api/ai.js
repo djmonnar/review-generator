@@ -72,30 +72,36 @@ export default async function handler(req, res) {
         // 2. [NEW] 현수막 시안(이미지) 생성 로직
         // ==========================================
         else if (action === 'banner') {
-            // 이미지 모델 전용 URL로 변경 (Nano Banana 대응 모델)
-            url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`;
+            // ⭐ 구글 최고성능 이미지 생성 모델 (Imagen 4.0) 로 URL 변경
+            url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
             
-            const imagePrompt = `당신은 '연해주' 브랜드를 담당하는 최고 수준의 시각 디자이너입니다. 다음 요청사항에 맞춰 고품질의 상업용 현수막(배너) 시안 이미지를 생성해 주세요.
+            const imagePrompt = `당신은 현수막 디자인 업계의 최고 수준의 시각 디자이너입니다. 다음 요청사항에 맞춰 고품질의 상업용 현수막(배너) 시안 이미지를 생성해 주세요.
 - 현수막 문구: "${body.bannerText}" (반드시 이미지 안에 이 문구가 타이포그래피 형태로 또렷하게 들어가야 합니다.)
 - 디자인 사이즈/비율: ${body.bannerSize}
 - 디자인 분위기: ${body.bannerVibe}
 - 전체 색상 톤: ${body.bannerTone}
 배경은 너무 복잡하지 않게 문구가 돋보이도록 처리하고, 세련된 레이아웃을 구성해 주세요.`;
 
+            // ⭐ Imagen 4.0 모델 규격에 맞게 데이터 구조 변경
             payload = {
-                contents: [{ parts: [{ text: imagePrompt }] }],
-                generationConfig: {
-                    // 텍스트가 아닌 이미지를 반환하도록 설정
-                    responseModalities: ["IMAGE"]
+                instances: [
+                    { prompt: imagePrompt }
+                ],
+                parameters: {
+                    sampleCount: 1
                 }
             };
 
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
-            if (!response.ok) throw new Error(data.error?.message || '이미지 생성 API 에러');
+            
+            if (!response.ok) {
+                console.error("이미지 API 에러 상세:", data);
+                throw new Error(data.error?.message || '이미지 생성 API 에러');
+            }
 
-            // 생성된 Base64 이미지 데이터 추출
-            const base64Image = data.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+            // ⭐ Imagen 4.0 규격에 맞춰 Base64 이미지 데이터 추출
+            const base64Image = data.predictions?.[0]?.bytesBase64Encoded;
             
             if (!base64Image) {
                 throw new Error("이미지 생성에 실패했습니다. 프롬프트를 조금 수정해 보세요.");
