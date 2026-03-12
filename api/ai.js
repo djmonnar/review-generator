@@ -33,10 +33,7 @@ export default async function handler(req, res) {
                 jsonSchema = {
                     type: "OBJECT",
                     properties: {
-                        reply: { type: "STRING" }, 
-                        customerType: { type: "STRING" }, 
-                        sentiment: { type: "STRING" }, 
-                        keywords: { type: "ARRAY", items: { type: "STRING" } }
+                        reply: { type: "STRING" }, customerType: { type: "STRING" }, sentiment: { type: "STRING" }, keywords: { type: "ARRAY", items: { type: "STRING" } }
                     }
                 };
             } 
@@ -47,8 +44,7 @@ export default async function handler(req, res) {
                 jsonSchema = {
                     type: "OBJECT",
                     properties: {
-                        caption: { type: "STRING" }, 
-                        hashtags: { type: "ARRAY", items: { type: "STRING" } }
+                        caption: { type: "STRING" }, hashtags: { type: "ARRAY", items: { type: "STRING" } }
                     }
                 };
             }
@@ -68,13 +64,18 @@ export default async function handler(req, res) {
             if (!response.ok) throw new Error(data.error?.message || '구글 API 에러');
 
             const candidate = data.candidates?.[0];
-            if (!candidate?.content) {
-                throw new Error("AI가 응답을 생성하지 못했습니다. (사유: " + (candidate?.finishReason || "차단됨") + ")");
-            }
-            const resultText = candidate.content.parts?.[0]?.text;
+            if (!candidate?.content) throw new Error("AI 응답 생성 실패");
+            
+            let resultText = candidate.content.parts?.[0]?.text;
             if (!resultText) throw new Error("AI 응답 형식이 올바르지 않습니다.");
 
-            return res.status(200).json({ result: isJson ? JSON.parse(resultText) : resultText });
+            // ⭐ 핵심 에러 방어: AI가 멋대로 붙인 마크다운(```json 등) 찌꺼기 완벽 청소
+            if (isJson) {
+                resultText = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                return res.status(200).json({ result: JSON.parse(resultText) });
+            } else {
+                return res.status(200).json({ result: resultText });
+            }
         }
         
         else if (action === 'banner') {
@@ -82,24 +83,18 @@ export default async function handler(req, res) {
 사용자의 요청을 분석하여, 배경을 그리기 위한 '영문 프롬프트'와 텍스트를 꾸미기 위한 '디자인 속성'을 JSON으로 반환하세요.
 
 [작성 원칙]
-1. bgPrompt: 배경 이미지를 생성할 프롬프트. ⭐반드시 100% 영어(English Only)로만 작성하세요! 한글은 단 1글자도 들어가면 안 됩니다!⭐ 쉼표로 구분된 짧고 명확한 영어 키워드 10개 이내로 작성하세요. 반드시 "no text, empty background, blank space"를 포함하여 이미지 안에 글씨가 절대 나오지 않게 할 것. (예: "korean traditional, birthday party, elegant, gold, empty background, no text")
-2. textColor: 배경과 대비되어 글씨가 잘 보일 Hex 색상 코드 (예: 밝은 톤 배경이면 #111111, 어두운 톤 배경이면 #FFFFFF)
-3. fontType: 분위기에 맞는 폰트 선택 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
-4. textShadow: 글씨 가독성을 높일 CSS 그림자 값 (예: 밝은 글씨면 "2px 2px 4px rgba(0,0,0,0.8)", 어두운 글씨면 "2px 2px 4px rgba(255,255,255,0.8)")
-5. textAlign: 텍스트 정렬 방향 ("left", "center", "right" 중 가장 어울리는 것 택 1)
-6. fontWeight: 글씨 굵기 ("normal", "bold", "900" 중 택 1)`;
+1. bgPrompt: 배경 이미지를 생성할 프롬프트. ⭐반드시 100% 영어(English Only)로만 작성하세요! 한글은 절대 금지!⭐ 쉼표로 구분된 짧고 명확한 영어 키워드 10개 이내로 작성. 반드시 "no text, empty background, blank space"를 포함하여 글씨가 나오지 않게 할 것.
+2. textColor: 배경과 대비되어 글씨가 잘 보일 Hex 색상 코드
+3. fontType: 분위기에 맞는 폰트 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
+4. textShadow: 글씨 가독성을 높일 CSS 그림자 값
+5. textAlign: 텍스트 정렬 방향 ("left", "center", "right" 중 택 1)
+6. fontWeight: 글씨 굵기 ("400", "700", "900" 중 택 1)`;
             
             let userPrompt = `[행사 카테고리]: ${body.eventType}\n[현수막 문구]: ${body.bannerText}\n[분위기]: ${body.bannerVibe}\n[색상 톤]: ${body.bannerTone}`;
-            let isJson = true;
             let jsonSchema = {
                 type: "OBJECT",
                 properties: {
-                    bgPrompt: { type: "STRING" },
-                    textColor: { type: "STRING" },
-                    fontType: { type: "STRING" },
-                    textShadow: { type: "STRING" },
-                    textAlign: { type: "STRING" },
-                    fontWeight: { type: "STRING" }
+                    bgPrompt: { type: "STRING" }, textColor: { type: "STRING" }, fontType: { type: "STRING" }, textShadow: { type: "STRING" }, textAlign: { type: "STRING" }, fontWeight: { type: "STRING" }
                 }
             };
 
@@ -115,11 +110,13 @@ export default async function handler(req, res) {
             if (!response.ok) throw new Error(data.error?.message || 'API 에러');
             
             const candidate = data.candidates?.[0];
-            if (!candidate?.content) {
-                throw new Error("디자인 기획 생성 실패 (사유: " + (candidate?.finishReason || "차단됨") + ")");
-            }
-            const resultText = candidate.content.parts?.[0]?.text;
+            if (!candidate?.content) throw new Error("디자인 기획 생성 실패");
+            
+            let resultText = candidate.content.parts?.[0]?.text;
             if (!resultText) throw new Error("AI 응답 형식이 올바르지 않습니다.");
+
+            // ⭐ 핵심 에러 방어: 마크다운 찌꺼기 완벽 청소 (이게 Vercel 500 에러의 주범이었습니다!)
+            resultText = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
             return res.status(200).json({ result: JSON.parse(resultText) });
         } 
