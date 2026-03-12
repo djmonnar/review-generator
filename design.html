@@ -41,10 +41,7 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">행사 카테고리 (선택) 🎉</label>
                 <div class="flex flex-wrap gap-2">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="" class="peer sr-only" checked>
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">선택 안함</div>
-                    </label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="" class="peer sr-only" checked><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">선택 안함</div></label>
                     <label class="cursor-pointer"><input type="radio" name="eventType" value="돌잔치" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">돌잔치</div></label>
                     <label class="cursor-pointer"><input type="radio" name="eventType" value="환갑" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">환갑</div></label>
                     <label class="cursor-pointer"><input type="radio" name="eventType" value="칠순" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">칠순</div></label>
@@ -109,13 +106,16 @@
 
         <!-- 결과 영역 -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
-            <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 오타 없는 완벽한 시안 (오버레이 합성)</h3>
+            <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 완성된 초고화질 시안</h3>
             
-            <!-- 캔버스 합성 영역 -->
-            <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 flex justify-center items-center overflow-hidden w-full relative">
-                <!-- ⭐ 가짜 배경 삭제! 진짜 이미지만 보여줍니다 -->
+            <!-- ⭐ 레이아웃 붕괴를 막는 핵심 구조 (relative + absolute) ⭐ -->
+            <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 overflow-hidden w-full relative">
+                <!-- 배경 레이어 -->
                 <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0 hidden">
-                <div id="textLayer" class="relative z-10 w-full p-8 leading-snug whitespace-pre-wrap break-keep flex flex-col justify-center h-full"></div>
+                <!-- 가독성을 위한 오버레이 레이어 -->
+                <div id="overlayLayer" class="absolute top-0 left-0 w-full h-full z-10 opacity-30 hidden"></div>
+                <!-- 텍스트 레이어 (앱솔루트로 고정되어 상자를 늘리지 않음) -->
+                <div id="textLayer" class="absolute top-0 left-0 w-full h-full z-20 p-6 md:p-8 leading-snug whitespace-pre-wrap break-keep flex flex-col justify-center"></div>
             </div>
 
             <button id="downloadBtn" onclick="downloadBanner()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
@@ -169,13 +169,15 @@
                 size = customVal;
             }
 
-            const bannerText = eventType ? `[${eventType}]\n${rawBannerText}` : rawBannerText;
+            // ⭐ [문제 해결 1] 현수막 글자에 [팔순] 안 나오게 분리!
+            // 화면(텍스트 레이어)에는 rawBannerText 만 띄우고, AI에게 보낼 때만 eventType 정보를 함께 보냅니다.
 
             errorMsg.classList.add('hidden');
             resultSection.classList.add('hidden');
-            document.getElementById('bgLayer').classList.add('hidden'); // 기존 이미지 숨김
+            document.getElementById('bgLayer').classList.add('hidden'); 
+            document.getElementById('overlayLayer').classList.add('hidden');
             
-            btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">AI가 배경을 그리는 중 (약 10초)...</span>`;
+            btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">AI가 배경을 그리는 중 (3~5초 소요)...</span>`;
             btn.disabled = true;
             btn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -184,19 +186,25 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        action: 'banner', bannerText: rawBannerText, eventType: eventType, bannerSize: size, bannerVibe: vibe, bannerTone: tone
+                        action: 'banner', 
+                        bannerText: rawBannerText, // 백엔드에는 원래 텍스트 전달 (백엔드에서 eventType과 합쳐서 이해함)
+                        eventType: eventType, 
+                        bannerSize: size, 
+                        bannerVibe: vibe, 
+                        bannerTone: tone
                     })
                 });
 
-                if (!response.ok) throw new Error('서버 통신 오류');
+                if (!response.ok) throw new Error('서버 통신 오류 (API가 응답하지 않습니다.)');
                 const data = await response.json();
                 const design = data.result;
                 
                 const captureArea = document.getElementById('captureArea');
                 const bgLayer = document.getElementById('bgLayer');
+                const overlayLayer = document.getElementById('overlayLayer');
                 const textLayer = document.getElementById('textLayer');
 
-                // 사이즈 자동 계산
+                // 1. 캔버스 비율 설정 (레이아웃 붕괴 원천 차단)
                 let width = 1200, height = 420;
                 if (size === '정사각형') {
                     width = 800; height = 800;
@@ -215,26 +223,34 @@
                     }
                 }
 
-                // 텍스트 디자인 적용 (정렬, 굵기 추가됨)
-                textLayer.textContent = bannerText; 
-                textLayer.style.color = design.textColor;
+                // 2. 텍스트 레이어 디자인 적용 (오직 대표님이 쓴 내용만!)
+                textLayer.textContent = rawBannerText; 
+                textLayer.style.color = design.textColor || '#000000';
                 textLayer.style.fontFamily = `'${design.fontType}', sans-serif`;
-                textLayer.style.textShadow = design.textShadow;
+                textLayer.style.textShadow = design.textShadow || 'none';
                 textLayer.style.textAlign = design.textAlign || 'center';
                 textLayer.style.fontWeight = design.fontWeight || '700';
                 
-                // 똑똑한 폰트 크기 조절
-                let baseVw = 4;
-                if (bannerText.length > 15) baseVw = 3.5;
-                if (bannerText.length > 30) baseVw = 2.5;
-                if (size === '정사각형') baseVw *= 1.5;
-                textLayer.style.fontSize = `calc(${baseVw}vw + 12px)`;
+                // ⭐ [문제 해결 2] 글자 수에 맞춰서 안전한 단위(rem)로 폰트 크기 계산 (레이아웃 보호)
+                let baseRem = 2.0;
+                if (rawBannerText.length > 15) baseRem = 1.6;
+                if (rawBannerText.length > 30) baseRem = 1.2;
+                if (size === '정사각형') baseRem *= 1.4;
+                textLayer.style.fontSize = `${baseRem}rem`;
 
-                // ⭐ 이미지 서버에서 안전하게 다운로드(Fetch API 사용)
+                // 3. 배경 오버레이 적용 (가독성 증가)
+                if (tone.includes('어둡') || design.textColor.includes('FFF') || design.textColor.includes('fff')) {
+                    overlayLayer.style.backgroundColor = '#000000';
+                    overlayLayer.classList.remove('hidden');
+                } else if (tone.includes('밝') || tone.includes('파스텔')) {
+                    overlayLayer.style.backgroundColor = '#ffffff';
+                    overlayLayer.classList.remove('hidden');
+                }
+
+                // 4. 이미지 로딩 (빠른 엔진)
                 const randomSeed = Math.floor(Math.random() * 100000);
                 const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&model=flux&seed=${randomSeed}`;
                 
-                // 타임아웃 설정을 포함한 이미지 다운로드 (가짜 배경 없이 무조건 그림을 받아옵니다)
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 20000); // 20초 대기
                 
@@ -248,7 +264,7 @@
                     bgLayer.src = URL.createObjectURL(blob);
                     
                     bgLayer.onload = () => {
-                        bgLayer.classList.remove('hidden'); // 그림이 다 로딩되면 그때 짠! 보여줌
+                        bgLayer.classList.remove('hidden'); 
                         resultSection.classList.remove('hidden');
                         setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                         
@@ -297,5 +313,3 @@
     </script>
 </body>
 </html>
-</html>
-
