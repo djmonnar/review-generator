@@ -72,7 +72,7 @@ export default async function handler(req, res) {
         // 2. [NEW] 현수막 시안(오버레이 합성) 생성 로직
         // ==========================================
         else if (action === 'banner') {
-            systemPrompt = `당신은 최고 수준의 현수막 시각 디자이너입니다. 우리는 '배경 이미지'와 '텍스트'를 따로 생성하여 웹에서 합성하는 방식을 사용합니다.
+            let systemPrompt = `당신은 최고 수준의 현수막 시각 디자이너입니다. 우리는 '배경 이미지'와 '텍스트'를 따로 생성하여 웹에서 합성하는 방식을 사용합니다.
 사용자의 요청을 분석하여, 배경을 그리기 위한 '영문 프롬프트'와 텍스트를 꾸미기 위한 '디자인 속성'을 JSON으로 반환하세요.
 
 [작성 원칙]
@@ -81,9 +81,9 @@ export default async function handler(req, res) {
 3. fontType: 분위기에 맞는 폰트 선택 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
 4. textShadow: 글씨 가독성을 높일 CSS 그림자 값 (예: 밝은 글씨면 "2px 2px 4px rgba(0,0,0,0.8)", 어두운 글씨면 "2px 2px 4px rgba(255,255,255,0.8)")`;
             
-            userPrompt = `[행사 카테고리]: ${body.eventType}\n[현수막 문구]: ${body.bannerText}\n[분위기]: ${body.bannerVibe}\n[색상 톤]: ${body.bannerTone}`;
-            isJson = true;
-            jsonSchema = {
+            let userPrompt = `[행사 카테고리]: ${body.eventType}\n[현수막 문구]: ${body.bannerText}\n[분위기]: ${body.bannerVibe}\n[색상 톤]: ${body.bannerTone}`;
+            let isJson = true;
+            let jsonSchema = {
                 type: "OBJECT",
                 properties: {
                     bgPrompt: { type: "STRING" },
