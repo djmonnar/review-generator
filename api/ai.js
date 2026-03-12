@@ -5,13 +5,12 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY; 
     if (!apiKey) {
-        return res.status(500).json({ error: '서버에 API 키가 설정되지 않았습니다.' });
+        return res.status(500).json({ error: 'Vercel 서버에 구글 API 키(GEMINI_API_KEY)가 등록되지 않았습니다!' });
     }
 
     const body = req.body;
     const action = body.action;
     
-    // ⭐ 가장 안정적인 정식 모델 사용
     let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     let payload = {};
 
@@ -61,15 +60,16 @@ export default async function handler(req, res) {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             
-            if (!response.ok) throw new Error(data.error?.message || '구글 API 에러');
+            if (!response.ok) {
+                throw new Error(`구글 API 오류: ${data.error?.message || '알 수 없는 구글 서버 오류'}`);
+            }
 
             const candidate = data.candidates?.[0];
-            if (!candidate?.content) throw new Error("AI 응답 생성 실패");
+            if (!candidate?.content) throw new Error("AI 응답이 차단되었습니다.");
             
             let resultText = candidate.content.parts?.[0]?.text;
-            if (!resultText) throw new Error("AI 응답 형식이 올바르지 않습니다.");
+            if (!resultText) throw new Error("AI 응답이 비어있습니다.");
 
-            // ⭐ 핵심 에러 방어: AI가 멋대로 붙인 마크다운(```json 등) 찌꺼기 완벽 청소
             if (isJson) {
                 resultText = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
                 return res.status(200).json({ result: JSON.parse(resultText) });
@@ -83,7 +83,7 @@ export default async function handler(req, res) {
 사용자의 요청을 분석하여, 배경을 그리기 위한 '영문 프롬프트'와 텍스트를 꾸미기 위한 '디자인 속성'을 JSON으로 반환하세요.
 
 [작성 원칙]
-1. bgPrompt: 배경 이미지를 생성할 프롬프트. ⭐반드시 100% 영어(English Only)로만 작성하세요! 한글은 절대 금지!⭐ 쉼표로 구분된 짧고 명확한 영어 키워드 10개 이내로 작성. 반드시 "no text, empty background, blank space"를 포함하여 글씨가 나오지 않게 할 것.
+1. bgPrompt: 배경 이미지 생성 프롬프트. ⭐반드시 100% 영어(English Only)로만 작성!⭐ 쉼표로 구분된 짧은 영어 키워드 10개 이내로 작성. 반드시 "no text, empty background, blank space"를 포함하여 글씨가 나오지 않게 할 것. 
 2. textColor: 배경과 대비되어 글씨가 잘 보일 Hex 색상 코드
 3. fontType: 분위기에 맞는 폰트 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
 4. textShadow: 글씨 가독성을 높일 CSS 그림자 값
@@ -107,25 +107,28 @@ export default async function handler(req, res) {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
             
-            if (!response.ok) throw new Error(data.error?.message || 'API 에러');
+            if (!response.ok) {
+                throw new Error(`구글 AI 오류: ${data.error?.message || '알 수 없는 오류'}`);
+            }
             
             const candidate = data.candidates?.[0];
-            if (!candidate?.content) throw new Error("디자인 기획 생성 실패");
+            if (!candidate?.content) throw new Error("구글 AI가 기획서 작성을 거부했습니다.");
             
             let resultText = candidate.content.parts?.[0]?.text;
-            if (!resultText) throw new Error("AI 응답 형식이 올바르지 않습니다.");
-
-            // ⭐ 핵심 에러 방어: 마크다운 찌꺼기 완벽 청소 (이게 Vercel 500 에러의 주범이었습니다!)
             resultText = resultText.replace(/```json/gi, '').replace(/```/g, '').trim();
 
-            return res.status(200).json({ result: JSON.parse(resultText) });
+            try {
+                return res.status(200).json({ result: JSON.parse(resultText) });
+            } catch (jsonError) {
+                throw new Error("AI가 잘못된 형식의 기획서를 보냈습니다.");
+            }
         } 
         else {
             return res.status(400).json({ error: '알 수 없는 요청입니다.' });
         }
         
     } catch (error) {
-        console.error('API Error:', error);
-        res.status(500).json({ error: error.message || '서버 내부 오류' });
+        console.error('API Error:', error.message);
+        res.status(500).json({ error: error.message || '서버 내부 오류가 발생했습니다.' });
     }
 }
