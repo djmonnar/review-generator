@@ -78,7 +78,7 @@ export default async function handler(req, res) {
 사용자의 요청을 분석하여, 배경을 그리기 위한 '영문 프롬프트'와 텍스트를 꾸미기 위한 '디자인 속성'을 JSON으로 반환하세요.
 
 [작성 원칙]
-1. bgPrompt: 배경 이미지를 생성할 상세한 **영어 프롬프트(English Only)**. 반드시 "no text, empty background, blank space"를 포함하여 이미지 안에 글씨가 절대 나오지 않게 할 것. 
+1. bgPrompt: 배경 이미지를 생성할 상세한 **영어 프롬프트(English Only)**. 반드시 "no text, empty background, blank space"를 포함하여 이미지 안에 글씨가 절대 나오지 않게 할 것. (무료 서버 오류 방지를 위해 최대 30단어 이내로 짧게 작성할 것)
 2. textColor: 배경과 대비되어 글씨가 잘 보일 Hex 색상 코드 (예: 밝은 톤 배경이면 #111111, 어두운 톤 배경이면 #FFFFFF)
 3. fontType: 분위기에 맞는 폰트 선택 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
 4. textShadow: 글씨 가독성을 높일 CSS 그림자 값 (예: 밝은 글씨면 "2px 2px 4px rgba(0,0,0,0.8)", 어두운 글씨면 "2px 2px 4px rgba(255,255,255,0.8)")`;
