@@ -7,12 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- 1. 무료 이미지 합성용 라이브러리 -->
+    <!-- 무료 이미지 합성용 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- 2. 한글 디자인 폰트 -->
+    <!-- 한글 디자인 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
@@ -45,26 +45,11 @@
                         <input type="radio" name="eventType" value="" class="peer sr-only" checked>
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">선택 안함</div>
                     </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="돌잔치" class="peer sr-only">
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">돌잔치</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="환갑" class="peer sr-only">
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">환갑</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="칠순" class="peer sr-only">
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">칠순</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="팔순" class="peer sr-only">
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">팔순</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="구순" class="peer sr-only">
-                        <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">구순</div>
-                    </label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="돌잔치" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">돌잔치</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="환갑" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">환갑</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="칠순" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">칠순</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="팔순" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">팔순</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="eventType" value="구순" class="peer sr-only"><div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">구순</div></label>
                 </div>
             </div>
 
@@ -98,22 +83,10 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">디자인 분위기 🎨</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerVibe" value="고급스럽고 세련된 프리미엄 스타일" class="peer sr-only" checked>
-                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">✨ 고급/세련</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerVibe" value="시선을 사로잡는 강렬하고 눈에 띄는 스타일" class="peer sr-only">
-                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🔥 강렬/눈에띔</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerVibe" value="트렌디하고 감성적인 인스타 스타일" class="peer sr-only">
-                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">📸 감성/트렌디</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerVibe" value="친근하고 캐주얼한 따뜻한 스타일" class="peer sr-only">
-                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🥰 친근/따뜻함</div>
-                    </label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerVibe" value="고급스럽고 세련된 프리미엄 스타일" class="peer sr-only" checked><div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">✨ 고급/세련</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerVibe" value="시선을 사로잡는 강렬하고 눈에 띄는 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🔥 강렬/눈에띔</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerVibe" value="트렌디하고 감성적인 인스타 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">📸 감성/트렌디</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerVibe" value="친근하고 캐주얼한 따뜻한 스타일" class="peer sr-only"><div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🥰 친근/따뜻함</div></label>
                 </div>
             </div>
 
@@ -121,22 +94,10 @@
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">전체 색상 톤 🌈</label>
                 <div class="grid grid-cols-4 gap-2">
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerTone" value="밝고 화사한 톤" class="peer sr-only" checked>
-                        <div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-yellow-400 peer-checked:text-gray-900 peer-checked:border-transparent transition-all font-bold">밝은 톤</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerTone" value="어둡고 묵직한 톤" class="peer sr-only">
-                        <div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-900 peer-checked:text-white peer-checked:border-transparent transition-all font-bold">어두운 톤</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerTone" value="원색 중심의 쨍한 톤" class="peer sr-only">
-                        <div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-transparent transition-all font-bold">원색(쨍함)</div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerTone" value="부드러운 파스텔 톤" class="peer sr-only">
-                        <div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-pink-300 peer-checked:text-gray-900 peer-checked:border-transparent transition-all font-bold">파스텔</div>
-                    </label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerTone" value="밝고 화사한 톤" class="peer sr-only" checked><div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-yellow-400 peer-checked:text-gray-900 transition-all font-bold">밝은 톤</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerTone" value="어둡고 묵직한 톤" class="peer sr-only"><div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-900 peer-checked:text-white transition-all font-bold">어두운 톤</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerTone" value="원색 중심의 쨍한 톤" class="peer sr-only"><div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-red-500 peer-checked:text-white transition-all font-bold">원색(쨍함)</div></label>
+                    <label class="cursor-pointer"><input type="radio" name="bannerTone" value="부드러운 파스텔 톤" class="peer sr-only"><div class="text-center py-2 text-xs border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-pink-300 peer-checked:text-gray-900 transition-all font-bold">파스텔</div></label>
                 </div>
             </div>
 
@@ -146,14 +107,15 @@
             <p id="errorMsg" class="text-red-500 text-sm text-center font-medium hidden mt-2"></p>
         </div>
 
-        <!-- 결과 영역 (중복 태그 완전히 제거됨) -->
+        <!-- 결과 영역 -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
             <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 오타 없는 완벽한 시안 (오버레이 합성)</h3>
             
             <!-- 캔버스 합성 영역 -->
             <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 flex justify-center items-center overflow-hidden w-full relative">
-                <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0">
-                <div id="textLayer" class="relative z-10 w-full p-8 text-center leading-snug whitespace-pre-wrap break-keep"></div>
+                <!-- ⭐ 가짜 배경 삭제! 진짜 이미지만 보여줍니다 -->
+                <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0 hidden">
+                <div id="textLayer" class="relative z-10 w-full p-8 leading-snug whitespace-pre-wrap break-keep flex flex-col justify-center h-full"></div>
             </div>
 
             <button id="downloadBtn" onclick="downloadBanner()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
@@ -176,11 +138,8 @@
         function toggleCustomSize() {
             const isCustom = document.getElementById('customSizeRadio').checked;
             const input = document.getElementById('customSizeInput');
-            if(isCustom) {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-            }
+            if(isCustom) input.classList.remove('hidden');
+            else input.classList.add('hidden');
         }
 
         async function generateBanner() {
@@ -214,8 +173,9 @@
 
             errorMsg.classList.add('hidden');
             resultSection.classList.add('hidden');
+            document.getElementById('bgLayer').classList.add('hidden'); // 기존 이미지 숨김
             
-            btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">AI가 디자인을 기획하는 중...</span>`;
+            btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">AI가 배경을 그리는 중 (약 10초)...</span>`;
             btn.disabled = true;
             btn.classList.add('opacity-80', 'cursor-not-allowed');
 
@@ -228,11 +188,7 @@
                     })
                 });
 
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error || '서버 통신 오류');
-                }
-
+                if (!response.ok) throw new Error('서버 통신 오류');
                 const data = await response.json();
                 const design = data.result;
                 
@@ -240,6 +196,7 @@
                 const bgLayer = document.getElementById('bgLayer');
                 const textLayer = document.getElementById('textLayer');
 
+                // 사이즈 자동 계산
                 let width = 1200, height = 420;
                 if (size === '정사각형') {
                     width = 800; height = 800;
@@ -249,8 +206,7 @@
                 } else {
                     const matches = size.match(/(\d+)[xX*×\s]+(\d+)/);
                     if (matches && matches.length >= 3) {
-                        let w = parseInt(matches[1]);
-                        let h = parseInt(matches[2]);
+                        let w = parseInt(matches[1]); let h = parseInt(matches[2]);
                         captureArea.style.aspectRatio = `${w} / ${h}`;
                         if(w >= h) { width = 1000; height = Math.round(1000 * (h / w)); }
                         else { height = 1000; width = Math.round(1000 * (w / h)); }
@@ -259,70 +215,54 @@
                     }
                 }
 
-                const randomSeed = Math.floor(Math.random() * 100000);
-                const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&seed=${randomSeed}`;
-                
+                // 텍스트 디자인 적용 (정렬, 굵기 추가됨)
                 textLayer.textContent = bannerText; 
                 textLayer.style.color = design.textColor;
                 textLayer.style.fontFamily = `'${design.fontType}', sans-serif`;
                 textLayer.style.textShadow = design.textShadow;
+                textLayer.style.textAlign = design.textAlign || 'center';
+                textLayer.style.fontWeight = design.fontWeight || '700';
                 
-                const fontSize = bannerText.length > 25 ? '1.5rem' : '2.5rem';
-                textLayer.style.fontSize = `calc(${fontSize} + 1vw)`;
+                // 똑똑한 폰트 크기 조절
+                let baseVw = 4;
+                if (bannerText.length > 15) baseVw = 3.5;
+                if (bannerText.length > 30) baseVw = 2.5;
+                if (size === '정사각형') baseVw *= 1.5;
+                textLayer.style.fontSize = `calc(${baseVw}vw + 12px)`;
 
-                // 무한 로딩 방지 타이머
-                const loadingTimeout = setTimeout(() => {
-                    bgLayer.src = ""; 
-                    if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
-                    else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
-                    else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
-                    else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
-                    
-                    errorMsg.textContent = "이미지 서버 응답 지연으로 텍스트 전용 배경으로 대체되었습니다.";
-                    errorMsg.classList.remove('hidden');
-                    
-                    resultSection.classList.remove('hidden');
-                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                    
-                    btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                }, 20000);
-
-                bgLayer.onload = () => {
-                    clearTimeout(loadingTimeout); 
-                    captureArea.style.background = "transparent"; 
-                    resultSection.classList.remove('hidden');
-                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                    
-                    btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                };
-
-                bgLayer.onerror = () => {
-                    clearTimeout(loadingTimeout); 
-                    bgLayer.src = ""; 
-                    if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
-                    else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
-                    else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
-                    else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
-                    
-                    errorMsg.textContent = "AI 배경을 불러오지 못해 텍스트 전용 배경으로 대체했습니다.";
-                    errorMsg.classList.remove('hidden');
-                    
-                    resultSection.classList.remove('hidden');
-                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-                    
-                    btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
-                    btn.disabled = false;
-                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                };
+                // ⭐ 이미지 서버에서 안전하게 다운로드(Fetch API 사용)
+                const randomSeed = Math.floor(Math.random() * 100000);
+                const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&model=flux&seed=${randomSeed}`;
                 
-                bgLayer.src = bgUrl;
+                // 타임아웃 설정을 포함한 이미지 다운로드 (가짜 배경 없이 무조건 그림을 받아옵니다)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 20000); // 20초 대기
+                
+                try {
+                    const imgResponse = await fetch(bgUrl, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    
+                    if (!imgResponse.ok) throw new Error("이미지 서버가 바쁩니다.");
+                    
+                    const blob = await imgResponse.blob();
+                    bgLayer.src = URL.createObjectURL(blob);
+                    
+                    bgLayer.onload = () => {
+                        bgLayer.classList.remove('hidden'); // 그림이 다 로딩되면 그때 짠! 보여줌
+                        resultSection.classList.remove('hidden');
+                        setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                        
+                        btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    };
+                } catch (fetchError) {
+                    clearTimeout(timeoutId);
+                    throw new Error("무료 이미지 서버가 너무 바빠 배경을 그리지 못했습니다. 한 번 더 [생성하기] 버튼을 눌러주세요!");
+                }
 
             } catch (error) {
-                errorMsg.textContent = "오류 발생: " + error.message;
+                errorMsg.textContent = "알림: " + error.message;
                 errorMsg.classList.remove('hidden');
                 
                 btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
@@ -357,3 +297,5 @@
     </script>
 </body>
 </html>
+</html>
+
