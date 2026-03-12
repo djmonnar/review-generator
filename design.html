@@ -77,16 +77,21 @@
             <!-- 사이즈 선택 -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">현수막 사이즈 📏</label>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-3 gap-2">
                     <label class="cursor-pointer">
-                        <input type="radio" name="bannerSize" value="가로형" class="peer sr-only" checked>
-                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">가로형 현수막<br><span class="text-xs opacity-80">(일반적인 벽면용)</span></div>
+                        <input type="radio" name="bannerSize" value="가로형" class="peer sr-only" checked onchange="toggleCustomSize()">
+                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50 flex flex-col justify-center h-full">가로형<br><span class="text-[10px] opacity-80 mt-1">(일반 벽면)</span></div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="bannerSize" value="정사각형" class="peer sr-only">
-                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">정사각형 현수막<br><span class="text-xs opacity-80">(SNS/포스터용)</span></div>
+                        <input type="radio" name="bannerSize" value="정사각형" class="peer sr-only" onchange="toggleCustomSize()">
+                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50 flex flex-col justify-center h-full">정사각형<br><span class="text-[10px] opacity-80 mt-1">(SNS용)</span></div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="bannerSize" value="custom" class="peer sr-only" id="customSizeRadio" onchange="toggleCustomSize()">
+                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50 flex flex-col justify-center h-full">직접 입력<br><span class="text-[10px] opacity-80 mt-1">(비율 자동)</span></div>
                     </label>
                 </div>
+                <input type="text" id="customSizeInput" class="w-full border border-gray-300 rounded-xl p-3 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm hidden" placeholder="예: 200x50 (가로x세로 숫자를 적어주세요)">
             </div>
 
             <!-- 분위기 선택 -->
@@ -170,12 +175,23 @@
 
     <!-- 스크립트 -->
     <script>
+        // 직접 입력 창 토글 함수 추가
+        function toggleCustomSize() {
+            const isCustom = document.getElementById('customSizeRadio').checked;
+            const input = document.getElementById('customSizeInput');
+            if(isCustom) {
+                input.classList.remove('hidden');
+            } else {
+                input.classList.add('hidden');
+            }
+        }
+
         async function generateBanner() {
             const rawBannerText = document.getElementById('bannerText').value.trim();
             const eventType = document.querySelector('input[name="eventType"]:checked').value;
             const vibe = document.querySelector('input[name="bannerVibe"]:checked').value;
             const tone = document.querySelector('input[name="bannerTone"]:checked').value;
-            const size = document.querySelector('input[name="bannerSize"]:checked').value;
+            let size = document.querySelector('input[name="bannerSize"]:checked').value;
 
             const btn = document.getElementById('generateBtn');
             const errorMsg = document.getElementById('errorMsg');
@@ -185,6 +201,17 @@
                 errorMsg.textContent = "현수막에 들어갈 문구를 입력해주세요!"; 
                 errorMsg.classList.remove('hidden'); 
                 return; 
+            }
+
+            // 직접 입력 사이즈 검증
+            if (size === 'custom') {
+                const customVal = document.getElementById('customSizeInput').value.trim();
+                if(!customVal) {
+                    errorMsg.textContent = "원하시는 현수막 사이즈를 입력해주세요. (예: 200x50)";
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
+                size = customVal;
             }
 
             const bannerText = eventType ? `[${eventType}]\n${rawBannerText}` : rawBannerText;
@@ -217,15 +244,31 @@
                 const bgLayer = document.getElementById('bgLayer');
                 const textLayer = document.getElementById('textLayer');
 
+                // 사이즈에 따른 비율 자동 계산
                 let width = 1200, height = 420;
                 if (size === '정사각형') {
                     width = 800; height = 800;
                     captureArea.style.aspectRatio = "1 / 1";
-                } else {
+                } else if (size === '가로형') {
                     captureArea.style.aspectRatio = "20 / 7";
+                } else {
+                    // 사용자가 입력한 숫자에서 비율 추출 (예: 200x50 -> 4:1)
+                    const matches = size.match(/(\d+)[xX*×\s]+(\d+)/);
+                    if (matches && matches.length >= 3) {
+                        let w = parseInt(matches[1]);
+                        let h = parseInt(matches[2]);
+                        captureArea.style.aspectRatio = `${w} / ${h}`;
+                        // 고화질 생성을 위해 긴 쪽을 1000px 기준으로 설정
+                        if(w >= h) { width = 1000; height = Math.round(1000 * (h / w)); }
+                        else { height = 1000; width = Math.round(1000 * (w / h)); }
+                    } else {
+                        captureArea.style.aspectRatio = "20 / 7"; // 기본값
+                    }
                 }
 
-                const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true`;
+                // 캐시 방지를 위해 랜덤 시드값 추가
+                const randomSeed = Math.floor(Math.random() * 100000);
+                const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&seed=${randomSeed}`;
                 
                 textLayer.textContent = bannerText; 
                 textLayer.style.color = design.textColor;
@@ -235,23 +278,31 @@
                 const fontSize = bannerText.length > 25 ? '1.5rem' : '2.5rem';
                 textLayer.style.fontSize = `calc(${fontSize} + 1vw)`;
 
-                // ⭐ 무한 로딩 방지 (20초 타임아웃) 수정: 화면을 직접 원상복구
+                // ⭐ 무한 로딩 방지 (25초 타임아웃)
                 const loadingTimeout = setTimeout(() => {
                     bgLayer.src = ""; // 로딩 강제 취소
                     
-                    // 에러 메시지 띄우기
-                    errorMsg.textContent = "이미지 서버에 요청이 몰려 응답이 지연되었습니다. [생성하기]를 다시 눌러주세요!";
+                    // 타임아웃 시 기본 배경으로 대체
+                    if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
+                    else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+                    else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
+                    else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
+                    
+                    errorMsg.textContent = "이미지 서버 응답 지연으로 기본 예비 배경으로 대체되었습니다.";
                     errorMsg.classList.remove('hidden');
                     
-                    // 버튼 상태 되돌리기
+                    resultSection.classList.remove('hidden');
+                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    
                     btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
                     btn.disabled = false;
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                }, 20000);
+                }, 25000);
 
                 // ⭐ 이미지 정상 로드 완료 시
                 bgLayer.onload = () => {
                     clearTimeout(loadingTimeout); // 타임아웃 취소
+                    captureArea.style.background = "transparent"; // 배경색 초기화
                     resultSection.classList.remove('hidden');
                     setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                     
@@ -260,12 +311,22 @@
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
                 };
 
-                // ⭐ 이미지 로드 에러 발생 시 수정: 화면 직접 복구
+                // ⭐ 이미지 로드 에러 발생 시 (근본적인 엑스박스 방어 로직)
                 bgLayer.onerror = () => {
                     clearTimeout(loadingTimeout); // 타임아웃 취소
                     
-                    errorMsg.textContent = "배경 이미지를 불러오지 못했습니다. 일시적 오류일 수 있으니 다시 시도해주세요.";
+                    // 이미지가 깨졌을 때 기본 그라데이션 배경으로 즉시 대체! (글자는 보이게)
+                    bgLayer.src = ""; 
+                    if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
+                    else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
+                    else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
+                    else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
+                    
+                    errorMsg.textContent = "AI 배경 이미지를 불러오지 못해 예비 배경으로 대체했습니다.";
                     errorMsg.classList.remove('hidden');
+                    
+                    resultSection.classList.remove('hidden');
+                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                     
                     btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
                     btn.disabled = false;
