@@ -143,13 +143,13 @@
 
         <!-- 결과 영역 -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
+        // 결과 영역
+        <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
             <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 오타 없는 완벽한 시안 (오버레이 합성)</h3>
             
             <!-- 캔버스 합성 영역 (이 부분이 그림으로 저장됩니다) -->
             <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 flex justify-center items-center overflow-hidden w-full relative">
-                <!-- 배경 이미지 -->
                 <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0">
-                <!-- 오버레이 텍스트 -->
                 <div id="textLayer" class="relative z-10 w-full p-8 text-center leading-snug whitespace-pre-wrap break-keep"></div>
             </div>
 
@@ -158,7 +158,6 @@
             </button>
             <p class="text-xs text-green-600 font-bold text-center mt-3">※ 무료 기술을 적용하여 글씨가 깨지거나 오타가 발생하지 않습니다!</p>
             
-            <!-- 짓마케팅 업셀링(Up-selling) 배너 -->
             <div class="mt-6 bg-gradient-to-r from-blue-900 to-gray-800 rounded-xl p-4 text-center shadow-lg border border-gray-700">
                 <p class="text-yellow-400 text-xs font-bold mb-1">🎉 현수막 시안이 마음에 드시나요?</p>
                 <p class="text-white text-sm font-medium mb-3">더 완벽한 맞춤형 현수막 디자인과 마케팅이 필요하다면<br>언제든 짓마케팅에 문의해 주세요!</p>
@@ -172,7 +171,7 @@
     <!-- 스크립트 -->
     <script>
         async function generateBanner() {
-            const bannerText = document.getElementById('bannerText').value.trim();
+            const rawBannerText = document.getElementById('bannerText').value.trim();
             const eventType = document.querySelector('input[name="eventType"]:checked').value;
             const vibe = document.querySelector('input[name="bannerVibe"]:checked').value;
             const tone = document.querySelector('input[name="bannerTone"]:checked').value;
@@ -182,11 +181,13 @@
             const errorMsg = document.getElementById('errorMsg');
             const resultSection = document.getElementById('resultSection');
 
-            if (!bannerText) { 
+            if (!rawBannerText) { 
                 errorMsg.textContent = "현수막에 들어갈 문구를 입력해주세요!"; 
                 errorMsg.classList.remove('hidden'); 
                 return; 
             }
+
+            const bannerText = eventType ? `[${eventType}]\n${rawBannerText}` : rawBannerText;
 
             errorMsg.classList.add('hidden');
             resultSection.classList.add('hidden');
@@ -196,34 +197,26 @@
             btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
-                // 백엔드로 디자인 기획 요청 (action: banner)
                 const response = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        action: 'banner', 
-                        bannerText: bannerText,
-                        eventType: eventType,
-                        bannerSize: size,
-                        bannerVibe: vibe,
-                        bannerTone: tone
+                        action: 'banner', bannerText: rawBannerText, eventType: eventType, bannerSize: size, bannerVibe: vibe, bannerTone: tone
                     })
                 });
 
                 if (!response.ok) {
-                    throw new Error('서버 통신 오류');
+                    const errData = await response.json();
+                    throw new Error(errData.error || '서버 통신 오류');
                 }
 
                 const data = await response.json();
                 const design = data.result;
                 
-                // --- 프론트엔드 오버레이 합성 시작 ---
-                
                 const captureArea = document.getElementById('captureArea');
                 const bgLayer = document.getElementById('bgLayer');
                 const textLayer = document.getElementById('textLayer');
 
-                // 비율 설정
                 let width = 1200, height = 420;
                 if (size === '정사각형') {
                     width = 800; height = 800;
@@ -232,22 +225,25 @@
                     captureArea.style.aspectRatio = "20 / 7";
                 }
 
-                // 1. 무료 이미지 생성 API (Pollinations) 호출
-                // 프롬프트를 인코딩하여 바로 이미지 태그 소스로 사용합니다.
                 const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true`;
                 
-                // 2. 텍스트 레이어 디자인 적용
-                textLayer.textContent = bannerText; // 원본 텍스트 그대로 적용!
+                textLayer.textContent = bannerText; 
                 textLayer.style.color = design.textColor;
                 textLayer.style.fontFamily = `'${design.fontType}', sans-serif`;
                 textLayer.style.textShadow = design.textShadow;
                 
-                // 글자 길이에 따른 폰트 크기 자동 조절
                 const fontSize = bannerText.length > 25 ? '1.5rem' : '2.5rem';
                 textLayer.style.fontSize = `calc(${fontSize} + 1vw)`;
 
-                // 이미지가 모두 로드된 후 화면에 표시
+                // ⭐ 무한 로딩 방지 (20초 타임아웃)
+                const loadingTimeout = setTimeout(() => {
+                    bgLayer.src = ""; // 로딩 강제 취소
+                    throw new Error("무료 이미지 서버 응답이 지연되었습니다. [생성하기]를 다시 눌러주세요.");
+                }, 20000);
+
+                // ⭐ 이미지 정상 로드 완료 시
                 bgLayer.onload = () => {
+                    clearTimeout(loadingTimeout); // 타임아웃 취소
                     resultSection.classList.remove('hidden');
                     setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                     
@@ -255,10 +251,17 @@
                     btn.disabled = false;
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
                 };
+
+                // ⭐ 이미지 로드 에러 발생 시
+                bgLayer.onerror = () => {
+                    clearTimeout(loadingTimeout); // 타임아웃 취소
+                    throw new Error("배경 이미지를 불러오지 못했습니다. 일시적 오류일 수 있으니 다시 시도해주세요.");
+                };
                 
                 bgLayer.src = bgUrl;
 
             } catch (error) {
+                // 어떤 에러든 여기서 잡아서 무한 대기를 풀어줍니다.
                 errorMsg.textContent = "오류 발생: " + error.message;
                 errorMsg.classList.remove('hidden');
                 
