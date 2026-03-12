@@ -118,6 +118,15 @@
     </div>
 
     <script>
+        // ⭐ 만약 AI 서버가 막히면 대신 띄워줄 최고급 프리미엄 배경 5종
+        const PREMIUM_FALLBACKS = {
+            "gold": "https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?w=1200&q=80&fit=crop", 
+            "party": "https://images.unsplash.com/photo-1496843916299-590492c25028?w=1200&q=80&fit=crop", 
+            "pastel": "https://images.unsplash.com/photo-1505909182942-e2f09aee3e89?w=1200&q=80&fit=crop", 
+            "dark": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80&fit=crop", 
+            "clean": "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=1200&q=80&fit=crop" 
+        };
+
         function toggleCustomSize() {
             const isCustom = document.getElementById('customSizeRadio').checked;
             const input = document.getElementById('customSizeInput');
@@ -209,27 +218,62 @@
                     overlayLayer.classList.remove('hidden');
                 }
 
-                // ⭐ 2단계: 백엔드에서 대리로 그림 받아오기!
-                const response2 = await fetch('/api/ai', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'banner_bg', bgPrompt: design.bgPrompt, tone: tone })
-                });
-
-                const data2 = await response2.json();
+                // ⭐ 2단계: 프론트엔드에서 직접 AI 서버 호출 (Vercel 우회 로직 제거)
+                // 이유: Vercel 서버는 해킹 봇으로 오해받아 차단당하므로 고객의 스마트폰/PC에서 직접 요청합니다!
+                // 속도를 높이기 위해 enhance=false 를 적용합니다.
+                const randomSeed = Math.floor(Math.random() * 1000000);
+                const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&enhance=false&seed=${randomSeed}`;
                 
-                // 받아온 Base64 텍스트 이미지를 바로 꽂습니다! (무한 로딩 절대 없음)
-                bgLayer.src = data2.result;
-                bgLayer.classList.remove('hidden');
+                // 실패 시 대비할 예비 프리미엄 이미지 세팅
+                const theme = design.bgTheme || "clean";
+                const fallbackImgUrl = PREMIUM_FALLBACKS[theme] || PREMIUM_FALLBACKS["clean"];
 
-                if (data2.isFallback) {
-                    errorMsg.innerHTML = `<i class="fas fa-info-circle"></i> AI 서버가 바빠 자체 디자인 배경으로 대체했습니다.`;
-                    errorMsg.className = "text-yellow-600 text-sm text-center font-bold mt-2";
+                const loadImg = new Image();
+                loadImg.crossOrigin = "anonymous";
+
+                // 12초 타임아웃 (무한 로딩 절대 방지)
+                const timeoutId = setTimeout(() => {
+                    loadImg.src = fallbackImgUrl; // 12초 넘으면 바로 예비 이미지로 교체!
+                    errorMsg.innerHTML = `<i class="fas fa-check-circle"></i> AI 지연으로 <b>테마 맞춤 프리미엄 배경</b>을 불러왔습니다.`;
+                    errorMsg.className = "text-green-600 text-sm text-center font-bold mt-2";
                     errorMsg.classList.remove('hidden');
-                }
+                }, 12000);
 
-                resultSection.classList.remove('hidden');
-                setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                loadImg.onload = () => {
+                    clearTimeout(timeoutId);
+                    bgLayer.src = loadImg.src;
+                    bgLayer.classList.remove('hidden');
+                    
+                    resultSection.classList.remove('hidden');
+                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    
+                    btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                };
+
+                loadImg.onerror = () => {
+                    clearTimeout(timeoutId);
+                    // AI 이미지가 보안에 튕겼다면, 프리미엄 이미지로 즉시 재시도
+                    if (loadImg.src === aiImageUrl) {
+                        loadImg.src = fallbackImgUrl;
+                        errorMsg.innerHTML = `<i class="fas fa-check-circle"></i> AI 서버 혼잡으로 <b>테마 맞춤 프리미엄 배경</b>을 불러왔습니다.`;
+                        errorMsg.className = "text-green-600 text-sm text-center font-bold mt-2";
+                        errorMsg.classList.remove('hidden');
+                    } else {
+                        // 둘 다 실패 시 (극히 드문 경우)
+                        errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle"></i> 이미지를 불러오지 못했습니다. 다시 시도해주세요.`;
+                        errorMsg.className = "text-red-600 text-sm text-center font-bold mt-2";
+                        errorMsg.classList.remove('hidden');
+                        
+                        btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    }
+                };
+
+                // 대망의 이미지 요청 시작!
+                loadImg.src = aiImageUrl;
 
             } catch (error) {
                 errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle"></i> 오류 발생:<br>${error.message}`;
@@ -269,6 +313,5 @@
         }
     </script>
 </body>
-</html>
 </html>
 
