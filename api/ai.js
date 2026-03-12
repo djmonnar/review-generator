@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const body = req.body;
     const action = body.action;
     
-    // ⭐ 문제 해결: preview가 아닌 구글 정식 버전 모델로 이름 원복!
+    // ⭐ 가장 안정적인 정식 모델 사용
     let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
     let payload = {};
 
@@ -33,7 +33,10 @@ export default async function handler(req, res) {
                 jsonSchema = {
                     type: "OBJECT",
                     properties: {
-                        reply: { type: "STRING" }, customerType: { type: "STRING" }, sentiment: { type: "STRING" }, keywords: { type: "ARRAY", items: { type: "STRING" } }
+                        reply: { type: "STRING" }, 
+                        customerType: { type: "STRING" }, 
+                        sentiment: { type: "STRING" }, 
+                        keywords: { type: "ARRAY", items: { type: "STRING" } }
                     }
                 };
             } 
@@ -44,7 +47,8 @@ export default async function handler(req, res) {
                 jsonSchema = {
                     type: "OBJECT",
                     properties: {
-                        caption: { type: "STRING" }, hashtags: { type: "ARRAY", items: { type: "STRING" } }
+                        caption: { type: "STRING" }, 
+                        hashtags: { type: "ARRAY", items: { type: "STRING" } }
                     }
                 };
             }
@@ -60,9 +64,9 @@ export default async function handler(req, res) {
 
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
+            
             if (!response.ok) throw new Error(data.error?.message || '구글 API 에러');
 
-            // 에러 방어 로직
             const candidate = data.candidates?.[0];
             if (!candidate?.content) {
                 throw new Error("AI가 응답을 생성하지 못했습니다. (사유: " + (candidate?.finishReason || "차단됨") + ")");
@@ -103,12 +107,12 @@ export default async function handler(req, res) {
 
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
+            
             if (!response.ok) throw new Error(data.error?.message || 'API 에러');
             
-            // 에러 방어 로직
             const candidate = data.candidates?.[0];
             if (!candidate?.content) {
-                throw new Error("디자인 기획 생성 실패 (사유: " + (candidate?.finishReason || "차단됨") + "). 문구를 조금 수정해보세요.");
+                throw new Error("디자인 기획 생성 실패 (사유: " + (candidate?.finishReason || "차단됨") + ")");
             }
             const resultText = candidate.content.parts?.[0]?.text;
             if (!resultText) throw new Error("AI 응답 형식이 올바르지 않습니다.");
