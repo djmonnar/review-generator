@@ -69,45 +69,43 @@ export default async function handler(req, res) {
         }
         
         // ==========================================
-        // 2. [NEW] 현수막 시안(이미지) 생성 로직
+        // 2. [NEW] 현수막 시안(오버레이 합성) 생성 로직
         // ==========================================
         else if (action === 'banner') {
-            // ⭐ 구글 최고성능 이미지 생성 모델 (Imagen 4.0) 로 URL 변경
-            url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-            
-            const imagePrompt = `당신은 현수막 디자인 업계의 최고 수준의 시각 디자이너입니다. 다음 요청사항에 맞춰 고품질의 상업용 현수막(배너) 시안 이미지를 생성해 주세요.
-- 현수막 문구: "${body.bannerText}" (반드시 이미지 안에 이 문구가 타이포그래피 형태로 또렷하게 들어가야 합니다.)
-- 디자인 사이즈/비율: ${body.bannerSize}
-- 디자인 분위기: ${body.bannerVibe}
-- 전체 색상 톤: ${body.bannerTone}
-배경은 너무 복잡하지 않게 문구가 돋보이도록 처리하고, 세련된 레이아웃을 구성해 주세요.`;
+            systemPrompt = `당신은 최고 수준의 현수막 시각 디자이너입니다. 우리는 '배경 이미지'와 '텍스트'를 따로 생성하여 웹에서 합성하는 방식을 사용합니다.
+사용자의 요청을 분석하여, 배경을 그리기 위한 '영문 프롬프트'와 텍스트를 꾸미기 위한 '디자인 속성'을 JSON으로 반환하세요.
 
-            // ⭐ Imagen 4.0 모델 규격에 맞게 데이터 구조 변경
-            payload = {
-                instances: [
-                    { prompt: imagePrompt }
-                ],
-                parameters: {
-                    sampleCount: 1
+[작성 원칙]
+1. bgPrompt: 배경 이미지를 생성할 상세한 **영어 프롬프트**. (반드시 "no text, empty background, blank space"를 포함하여 이미지 안에 글씨가 절대 나오지 않게 할 것. 분위기와 톤에 맞는 피사체, 조명, 여백, 색감 묘사)
+2. textColor: 배경과 대비되어 글씨가 잘 보일 Hex 색상 코드 (예: 밝은 톤 배경이면 #111111, 어두운 톤 배경이면 #FFFFFF)
+3. fontType: 분위기에 맞는 폰트 선택 ("Gowun Dodum", "Noto Sans KR", "Jua", "Nanum Pen Script" 중 택 1)
+4. textShadow: 글씨 가독성을 높일 CSS 그림자 값 (예: 밝은 글씨면 "2px 2px 4px rgba(0,0,0,0.8)", 어두운 글씨면 "2px 2px 4px rgba(255,255,255,0.8)")`;
+            
+            userPrompt = `[행사 카테고리]: ${body.eventType}\n[현수막 문구]: ${body.bannerText}\n[분위기]: ${body.bannerVibe}\n[색상 톤]: ${body.bannerTone}`;
+            isJson = true;
+            jsonSchema = {
+                type: "OBJECT",
+                properties: {
+                    bgPrompt: { type: "STRING" },
+                    textColor: { type: "STRING" },
+                    fontType: { type: "STRING" },
+                    textShadow: { type: "STRING" }
                 }
             };
 
+            payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: { responseMimeType: "application/json", responseSchema: jsonSchema }
+            };
+
+            // 유료 이미지 AI 대신, 100% 무료인 텍스트 AI(Gemini 2.5 Flash)를 호출하여 디자인 기획만 받아옵니다!
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             const data = await response.json();
+            if (!response.ok) throw new Error(data.error?.message || 'API 에러');
             
-            if (!response.ok) {
-                console.error("이미지 API 에러 상세:", data);
-                throw new Error(data.error?.message || '이미지 생성 API 에러');
-            }
-
-            // ⭐ Imagen 4.0 규격에 맞춰 Base64 이미지 데이터 추출
-            const base64Image = data.predictions?.[0]?.bytesBase64Encoded;
-            
-            if (!base64Image) {
-                throw new Error("이미지 생성에 실패했습니다. 프롬프트를 조금 수정해 보세요.");
-            }
-
-            return res.status(200).json({ result: { image: base64Image } });
+            const resultText = data.candidates[0].content.parts[0].text;
+            return res.status(200).json({ result: JSON.parse(resultText) });
         } 
         else {
             return res.status(400).json({ error: '알 수 없는 요청입니다.' });
