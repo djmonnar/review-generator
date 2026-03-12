@@ -6,11 +6,17 @@
     <title>현수막 시안 자동 생성기 by 짓마케팅</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- 1. 무료 이미지 합성용 라이브러리 (html2canvas) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- 2. 한글 디자인 폰트 4종 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; }
         .yh-bg { background-color: #1e293b; }
-        .yh-text { color: #1e293b; }
         .yh-accent { background-color: #3b82f6; }
         .yh-accent-hover:hover { background-color: #2563eb; }
         .loader { border: 3px solid #f3f3f3; border-radius: 50%; border-top: 3px solid #3b82f6; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
@@ -26,12 +32,12 @@
             <h1 class="text-2xl font-bold mb-2 flex justify-center items-center gap-2">
                 <i class="fas fa-bullhorn"></i> 현수막 시안 뚝딱이
             </h1>
-            <p class="text-sm text-gray-300 font-medium">원하는 문구와 분위기만 고르세요.<br>AI가 10초 만에 현수막 디자인을 완성해 드립니다.</p>
+            <p class="text-sm text-gray-300 font-medium">원하는 문구와 분위기만 고르세요.<br>무료 AI가 오타 없이 완벽한 시안을 완성해 드립니다.</p>
         </div>
 
         <div class="p-6 space-y-6">
             
-            <!-- 행사 목적 (선택) 추가됨 -->
+            <!-- 행사 카테고리 -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">행사 카테고리 (선택) 🎉</label>
                 <div class="flex flex-wrap gap-2">
@@ -62,33 +68,28 @@
                 </div>
             </div>
 
-            <!-- 1. 현수막 문구 (예시 수정됨) -->
+            <!-- 현수막 문구 -->
             <div>
                 <label for="bannerText" class="block text-sm font-bold text-gray-700 mb-2">현수막에 들어갈 문구 ✍️</label>
                 <textarea id="bannerText" rows="3" class="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm transition-all" placeholder="예: 아버지 팔순을 축하 드립니다! 건강하게 오래오래 함께해요 사랑합니다 💖"></textarea>
             </div>
 
-            <!-- 2. 사이즈 선택 -->
+            <!-- 사이즈 선택 -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">현수막 사이즈 📏</label>
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-2 gap-2">
                     <label class="cursor-pointer">
-                        <input type="radio" name="bannerSize" value="정사각형 (120x120)" class="peer sr-only" checked onchange="toggleCustomSize()">
-                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">정사각형<br><span class="text-xs opacity-80">(120x120)</span></div>
+                        <input type="radio" name="bannerSize" value="가로형" class="peer sr-only" checked>
+                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">가로형 현수막<br><span class="text-xs opacity-80">(일반적인 벽면용)</span></div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="bannerSize" value="가로형 (200x70)" class="peer sr-only" onchange="toggleCustomSize()">
-                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">가로형<br><span class="text-xs opacity-80">(200x70)</span></div>
-                    </label>
-                    <label class="cursor-pointer">
-                        <input type="radio" name="bannerSize" value="custom" class="peer sr-only" id="customSizeRadio" onchange="toggleCustomSize()">
-                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50 flex items-center justify-center h-full">직접 입력</div>
+                        <input type="radio" name="bannerSize" value="정사각형" class="peer sr-only">
+                        <div class="text-center py-2.5 text-sm border border-gray-200 text-gray-600 rounded-xl peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold shadow-sm hover:bg-gray-50">정사각형 현수막<br><span class="text-xs opacity-80">(SNS/포스터용)</span></div>
                     </label>
                 </div>
-                <input type="text" id="customSizeInput" class="w-full border border-gray-300 rounded-xl p-3 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm hidden" placeholder="예: 세로형 (60x180)">
             </div>
 
-            <!-- 3. 분위기 선택 -->
+            <!-- 분위기 선택 -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">디자인 분위기 🎨</label>
                 <div class="grid grid-cols-2 gap-2">
@@ -105,13 +106,13 @@
                         <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">📸 감성/트렌디</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="bannerVibe" value="친근하고 캐주얼한 동네 맛집 스타일" class="peer sr-only">
-                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🥰 친근/캐주얼</div>
+                        <input type="radio" name="bannerVibe" value="친근하고 캐주얼한 따뜻한 스타일" class="peer sr-only">
+                        <div class="text-center py-2 text-sm border border-gray-200 text-gray-600 rounded-lg peer-checked:bg-gray-800 peer-checked:text-white transition-all font-semibold">🥰 친근/따뜻함</div>
                     </label>
                 </div>
             </div>
 
-            <!-- 4. 톤 선택 -->
+            <!-- 톤 선택 -->
             <div>
                 <label class="block text-sm font-bold text-gray-700 mb-2">전체 색상 톤 🌈</label>
                 <div class="grid grid-cols-4 gap-2">
@@ -134,7 +135,6 @@
                 </div>
             </div>
 
-            <!-- 버튼 -->
             <button id="generateBtn" onclick="generateBanner()" class="w-full yh-accent yh-accent-hover text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all flex justify-center items-center mt-4">
                 <span>AI 현수막 시안 생성하기 🎨</span>
             </button>
@@ -143,86 +143,67 @@
 
         <!-- 결과 영역 -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
-            <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 완성된 시안 미리보기</h3>
+            <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 오타 없는 완벽한 시안 (오버레이 합성)</h3>
             
-            <div class="bg-white p-2 rounded-xl shadow-inner border border-gray-200 mb-4 flex justify-center items-center min-h-[200px]">
-            <img id="resultImage" src="" alt="생성된 현수막 시안" class="max-w-full h-auto rounded-lg shadow-sm">
-        </div>
+            <!-- 캔버스 합성 영역 (이 부분이 그림으로 저장됩니다) -->
+            <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 flex justify-center items-center overflow-hidden w-full relative">
+                <!-- 배경 이미지 -->
+                <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0">
+                <!-- 오버레이 텍스트 -->
+                <div id="textLayer" class="relative z-10 w-full p-8 text-center leading-snug whitespace-pre-wrap break-keep"></div>
+            </div>
 
-        <a id="downloadBtn" href="#" download="banner_design_highres.jpg" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
-            <i class="fas fa-download"></i> 고화질 시안 다운로드
-        </a>
-        <p class="text-xs text-gray-500 text-center mt-3">※ AI가 생성한 고해상도 시안 이미지입니다. 실제 대형 인쇄 시에는 디자이너의 약간의 글씨 보정이 필요할 수 있습니다.</p>
-        
-        <!-- 짓마케팅 업셀링(Up-selling) 배너 -->
-        <div class="mt-6 bg-gradient-to-r from-blue-900 to-gray-800 rounded-xl p-4 text-center shadow-lg border border-gray-700">
-            <p class="text-yellow-400 text-xs font-bold mb-1">🎉 현수막 시안이 마음에 드시나요?</p>
-            <p class="text-white text-sm font-medium mb-3">더 완벽한 맞춤형 현수막 디자인과 마케팅이 필요하다면<br>언제든 짓마케팅에 문의해 주세요!</p>
-            <a href="https://pf.kakao.com/_lPcZX" target="_blank" class="inline-block bg-white text-blue-900 text-sm font-bold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors w-full flex items-center justify-center gap-2">
-                <i class="fas fa-comment-dots text-yellow-500"></i> 짓마케팅 카카오톡 상담하기
-            </a>
+            <button id="downloadBtn" onclick="downloadBanner()" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
+                <i class="fas fa-download"></i> 고화질 이미지로 저장하기
+            </button>
+            <p class="text-xs text-green-600 font-bold text-center mt-3">※ 무료 기술을 적용하여 글씨가 깨지거나 오타가 발생하지 않습니다!</p>
+            
+            <!-- 짓마케팅 업셀링(Up-selling) 배너 -->
+            <div class="mt-6 bg-gradient-to-r from-blue-900 to-gray-800 rounded-xl p-4 text-center shadow-lg border border-gray-700">
+                <p class="text-yellow-400 text-xs font-bold mb-1">🎉 현수막 시안이 마음에 드시나요?</p>
+                <p class="text-white text-sm font-medium mb-3">더 완벽한 맞춤형 현수막 디자인과 마케팅이 필요하다면<br>언제든 짓마케팅에 문의해 주세요!</p>
+                <a href="https://pf.kakao.com/_lPcZX" target="_blank" class="inline-block bg-white text-blue-900 text-sm font-bold py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors w-full flex items-center justify-center gap-2">
+                    <i class="fas fa-comment-dots text-yellow-500"></i> 짓마케팅 카카오톡 상담하기
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- 스크립트 -->
-<script>
-    // 사용자 지정 사이즈 입력창 토글
-        function toggleCustomSize() {
-            const isCustom = document.getElementById('customSizeRadio').checked;
-            const input = document.getElementById('customSizeInput');
-            if(isCustom) {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-                input.value = '';
-            }
-    }
-
-    async function generateBanner() {
-        const rawBannerText = document.getElementById('bannerText').value.trim();
-        const eventType = document.querySelector('input[name="eventType"]:checked').value;
-        const vibe = document.querySelector('input[name="bannerVibe"]:checked').value;
-        const tone = document.querySelector('input[name="bannerTone"]:checked').value;
-        
-        let size = document.querySelector('input[name="bannerSize"]:checked').value;
-        if (size === 'custom') {
-                const customVal = document.getElementById('customSizeInput').value.trim();
-                if(!customVal) {
-                    alert("원하시는 현수막 사이즈를 입력해주세요.");
-                    return;
-                }
-                size = customVal;
-            }
+    <!-- 스크립트 -->
+    <script>
+        async function generateBanner() {
+            const bannerText = document.getElementById('bannerText').value.trim();
+            const eventType = document.querySelector('input[name="eventType"]:checked').value;
+            const vibe = document.querySelector('input[name="bannerVibe"]:checked').value;
+            const tone = document.querySelector('input[name="bannerTone"]:checked').value;
+            const size = document.querySelector('input[name="bannerSize"]:checked').value;
 
             const btn = document.getElementById('generateBtn');
             const errorMsg = document.getElementById('errorMsg');
-        const resultSection = document.getElementById('resultSection');
+            const resultSection = document.getElementById('resultSection');
 
-        if (!rawBannerText) { 
-            errorMsg.textContent = "현수막에 들어갈 문구를 입력해주세요!"; 
-            errorMsg.classList.remove('hidden'); 
-            return; 
-        }
+            if (!bannerText) { 
+                errorMsg.textContent = "현수막에 들어갈 문구를 입력해주세요!"; 
+                errorMsg.classList.remove('hidden'); 
+                return; 
+            }
 
-        // 행사 카테고리를 프롬프트에 몰래 추가하는 꼼수 로직!
-        const bannerText = eventType ? `[행사 테마: ${eventType}] ${rawBannerText}` : rawBannerText;
-
-        errorMsg.classList.add('hidden');
-        resultSection.classList.add('hidden');
-        
-        // 이미지 생성은 텍스트보다 오래 걸리므로 안내 문구 변경
-        btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">시안 렌더링 중... (약 10~15초 소요)</span>`;
+            errorMsg.classList.add('hidden');
+            resultSection.classList.add('hidden');
+            
+            btn.innerHTML = `<div class="loader"></div> <span class="opacity-90">AI가 디자인을 기획하는 중...</span>`;
             btn.disabled = true;
             btn.classList.add('opacity-80', 'cursor-not-allowed');
 
             try {
+                // 백엔드로 디자인 기획 요청 (action: banner)
                 const response = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         action: 'banner', 
                         bannerText: bannerText,
+                        eventType: eventType,
                         bannerSize: size,
                         bannerVibe: vibe,
                         bannerTone: tone
@@ -230,27 +211,87 @@
                 });
 
                 if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error || '서버 통신 오류');
+                    throw new Error('서버 통신 오류');
                 }
 
                 const data = await response.json();
+                const design = data.result;
                 
-                // 이미지 데이터(Base64) 적용
-                const imgSrc = "data:image/jpeg;base64," + data.result.image;
-                document.getElementById('resultImage').src = imgSrc;
-                document.getElementById('downloadBtn').href = imgSrc;
+                // --- 프론트엔드 오버레이 합성 시작 ---
                 
-                resultSection.classList.remove('hidden');
-                setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                const captureArea = document.getElementById('captureArea');
+                const bgLayer = document.getElementById('bgLayer');
+                const textLayer = document.getElementById('textLayer');
+
+                // 비율 설정
+                let width = 1200, height = 420;
+                if (size === '정사각형') {
+                    width = 800; height = 800;
+                    captureArea.style.aspectRatio = "1 / 1";
+                } else {
+                    captureArea.style.aspectRatio = "20 / 7";
+                }
+
+                // 1. 무료 이미지 생성 API (Pollinations) 호출
+                // 프롬프트를 인코딩하여 바로 이미지 태그 소스로 사용합니다.
+                const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true`;
                 
+                // 2. 텍스트 레이어 디자인 적용
+                textLayer.textContent = bannerText; // 원본 텍스트 그대로 적용!
+                textLayer.style.color = design.textColor;
+                textLayer.style.fontFamily = `'${design.fontType}', sans-serif`;
+                textLayer.style.textShadow = design.textShadow;
+                
+                // 글자 길이에 따른 폰트 크기 자동 조절
+                const fontSize = bannerText.length > 25 ? '1.5rem' : '2.5rem';
+                textLayer.style.fontSize = `calc(${fontSize} + 1vw)`;
+
+                // 이미지가 모두 로드된 후 화면에 표시
+                bgLayer.onload = () => {
+                    resultSection.classList.remove('hidden');
+                    setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                    
+                    btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                };
+                
+                bgLayer.src = bgUrl;
+
             } catch (error) {
                 errorMsg.textContent = "오류 발생: " + error.message;
                 errorMsg.classList.remove('hidden');
-            } finally {
+                
                 btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
                 btn.disabled = false;
                 btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+
+        // 캡처 후 고화질 이미지로 다운로드 하는 기능
+        async function downloadBanner() {
+            const dlBtn = document.getElementById('downloadBtn');
+            const originalHtml = dlBtn.innerHTML;
+            dlBtn.innerHTML = `<div class="loader" style="border-top-color:#fff;"></div> <span class="opacity-90">이미지 저장 중...</span>`;
+            dlBtn.disabled = true;
+
+            try {
+                // html2canvas로 캡처 영역을 고해상도로 캡처
+                const canvas = await html2canvas(document.getElementById('captureArea'), {
+                    useCORS: true, // 외부 이미지(배경) 허용
+                    scale: 3 // 고화질 출력을 위해 스케일 3배 적용
+                });
+                
+                // 이미지 파일로 다운로드
+                const link = document.createElement('a');
+                link.download = '짓마케팅_현수막시안.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+            } catch (error) {
+                alert('이미지 다운로드에 실패했습니다. 잠시 후 다시 시도해주세요.');
+            } finally {
+                dlBtn.innerHTML = originalHtml;
+                dlBtn.disabled = false;
             }
         }
     </script>
