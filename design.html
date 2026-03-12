@@ -7,10 +7,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- 1. 무료 이미지 합성용 라이브러리 (html2canvas) -->
+    <!-- 1. 무료 이미지 합성용 라이브러리 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- 2. 한글 디자인 폰트 4종 로드 -->
+    <!-- 2. 한글 디자인 폰트 -->
     <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet">
     
@@ -46,23 +46,23 @@
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">선택 안함</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="돌잔치 (1세)" class="peer sr-only">
+                        <input type="radio" name="eventType" value="돌잔치" class="peer sr-only">
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">돌잔치</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="환갑 (61세)" class="peer sr-only">
+                        <input type="radio" name="eventType" value="환갑" class="peer sr-only">
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">환갑</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="칠순/고희연 (70세)" class="peer sr-only">
+                        <input type="radio" name="eventType" value="칠순" class="peer sr-only">
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">칠순</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="팔순/산수연 (80세)" class="peer sr-only">
+                        <input type="radio" name="eventType" value="팔순" class="peer sr-only">
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">팔순</div>
                     </label>
                     <label class="cursor-pointer">
-                        <input type="radio" name="eventType" value="구순/졸수연 (90세)" class="peer sr-only">
+                        <input type="radio" name="eventType" value="구순" class="peer sr-only">
                         <div class="px-3 py-1.5 text-xs border border-gray-200 text-gray-600 rounded-full peer-checked:bg-blue-500 peer-checked:text-white transition-all font-semibold">구순</div>
                     </label>
                 </div>
@@ -146,13 +146,11 @@
             <p id="errorMsg" class="text-red-500 text-sm text-center font-medium hidden mt-2"></p>
         </div>
 
-        <!-- 결과 영역 -->
-        <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
-        // 결과 영역
+        <!-- 결과 영역 (중복 태그 완전히 제거됨) -->
         <div id="resultSection" class="bg-gray-50 p-6 border-t border-gray-200 hidden">
             <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fas fa-image text-blue-500"></i> ✨ 오타 없는 완벽한 시안 (오버레이 합성)</h3>
             
-            <!-- 캔버스 합성 영역 (이 부분이 그림으로 저장됩니다) -->
+            <!-- 캔버스 합성 영역 -->
             <div id="captureArea" class="bg-white rounded-xl shadow-inner border border-gray-300 mb-4 flex justify-center items-center overflow-hidden w-full relative">
                 <img id="bgLayer" crossorigin="anonymous" src="" class="absolute top-0 left-0 w-full h-full object-cover z-0">
                 <div id="textLayer" class="relative z-10 w-full p-8 text-center leading-snug whitespace-pre-wrap break-keep"></div>
@@ -163,6 +161,7 @@
             </button>
             <p class="text-xs text-green-600 font-bold text-center mt-3">※ 무료 기술을 적용하여 글씨가 깨지거나 오타가 발생하지 않습니다!</p>
             
+            <!-- 짓마케팅 업셀링 배너 -->
             <div class="mt-6 bg-gradient-to-r from-blue-900 to-gray-800 rounded-xl p-4 text-center shadow-lg border border-gray-700">
                 <p class="text-yellow-400 text-xs font-bold mb-1">🎉 현수막 시안이 마음에 드시나요?</p>
                 <p class="text-white text-sm font-medium mb-3">더 완벽한 맞춤형 현수막 디자인과 마케팅이 필요하다면<br>언제든 짓마케팅에 문의해 주세요!</p>
@@ -173,9 +172,7 @@
         </div>
     </div>
 
-    <!-- 스크립트 -->
     <script>
-        // 직접 입력 창 토글 함수 추가
         function toggleCustomSize() {
             const isCustom = document.getElementById('customSizeRadio').checked;
             const input = document.getElementById('customSizeInput');
@@ -203,7 +200,6 @@
                 return; 
             }
 
-            // 직접 입력 사이즈 검증
             if (size === 'custom') {
                 const customVal = document.getElementById('customSizeInput').value.trim();
                 if(!customVal) {
@@ -244,7 +240,6 @@
                 const bgLayer = document.getElementById('bgLayer');
                 const textLayer = document.getElementById('textLayer');
 
-                // 사이즈에 따른 비율 자동 계산
                 let width = 1200, height = 420;
                 if (size === '정사각형') {
                     width = 800; height = 800;
@@ -252,21 +247,18 @@
                 } else if (size === '가로형') {
                     captureArea.style.aspectRatio = "20 / 7";
                 } else {
-                    // 사용자가 입력한 숫자에서 비율 추출 (예: 200x50 -> 4:1)
                     const matches = size.match(/(\d+)[xX*×\s]+(\d+)/);
                     if (matches && matches.length >= 3) {
                         let w = parseInt(matches[1]);
                         let h = parseInt(matches[2]);
                         captureArea.style.aspectRatio = `${w} / ${h}`;
-                        // 고화질 생성을 위해 긴 쪽을 1000px 기준으로 설정
                         if(w >= h) { width = 1000; height = Math.round(1000 * (h / w)); }
                         else { height = 1000; width = Math.round(1000 * (w / h)); }
                     } else {
-                        captureArea.style.aspectRatio = "20 / 7"; // 기본값
+                        captureArea.style.aspectRatio = "20 / 7"; 
                     }
                 }
 
-                // 캐시 방지를 위해 랜덤 시드값 추가
                 const randomSeed = Math.floor(Math.random() * 100000);
                 const bgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(design.bgPrompt)}?width=${width}&height=${height}&nologo=true&seed=${randomSeed}`;
                 
@@ -278,17 +270,15 @@
                 const fontSize = bannerText.length > 25 ? '1.5rem' : '2.5rem';
                 textLayer.style.fontSize = `calc(${fontSize} + 1vw)`;
 
-                // ⭐ 무한 로딩 방지 (25초 타임아웃)
+                // 무한 로딩 방지 타이머
                 const loadingTimeout = setTimeout(() => {
-                    bgLayer.src = ""; // 로딩 강제 취소
-                    
-                    // 타임아웃 시 기본 배경으로 대체
+                    bgLayer.src = ""; 
                     if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
                     else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
                     else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
                     else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
                     
-                    errorMsg.textContent = "이미지 서버 응답 지연으로 기본 예비 배경으로 대체되었습니다.";
+                    errorMsg.textContent = "이미지 서버 응답 지연으로 텍스트 전용 배경으로 대체되었습니다.";
                     errorMsg.classList.remove('hidden');
                     
                     resultSection.classList.remove('hidden');
@@ -297,12 +287,11 @@
                     btn.innerHTML = `<span>AI 현수막 시안 생성하기 🎨</span>`;
                     btn.disabled = false;
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
-                }, 25000);
+                }, 20000);
 
-                // ⭐ 이미지 정상 로드 완료 시
                 bgLayer.onload = () => {
-                    clearTimeout(loadingTimeout); // 타임아웃 취소
-                    captureArea.style.background = "transparent"; // 배경색 초기화
+                    clearTimeout(loadingTimeout); 
+                    captureArea.style.background = "transparent"; 
                     resultSection.classList.remove('hidden');
                     setTimeout(() => resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
                     
@@ -311,18 +300,15 @@
                     btn.classList.remove('opacity-80', 'cursor-not-allowed');
                 };
 
-                // ⭐ 이미지 로드 에러 발생 시 (근본적인 엑스박스 방어 로직)
                 bgLayer.onerror = () => {
-                    clearTimeout(loadingTimeout); // 타임아웃 취소
-                    
-                    // 이미지가 깨졌을 때 기본 그라데이션 배경으로 즉시 대체! (글자는 보이게)
+                    clearTimeout(loadingTimeout); 
                     bgLayer.src = ""; 
                     if(tone.includes('어둡')) captureArea.style.background = "linear-gradient(135deg, #1f2937, #000000)";
                     else if(tone.includes('쨍한')) captureArea.style.background = "linear-gradient(135deg, #ef4444, #b91c1c)";
                     else if(tone.includes('파스텔')) captureArea.style.background = "linear-gradient(135deg, #fbcfe8, #f3e8ff)";
                     else captureArea.style.background = "linear-gradient(135deg, #fdfbfb, #ebedee)";
                     
-                    errorMsg.textContent = "AI 배경 이미지를 불러오지 못해 예비 배경으로 대체했습니다.";
+                    errorMsg.textContent = "AI 배경을 불러오지 못해 텍스트 전용 배경으로 대체했습니다.";
                     errorMsg.classList.remove('hidden');
                     
                     resultSection.classList.remove('hidden');
@@ -336,7 +322,6 @@
                 bgLayer.src = bgUrl;
 
             } catch (error) {
-                // 어떤 에러든 여기서 잡아서 무한 대기를 풀어줍니다.
                 errorMsg.textContent = "오류 발생: " + error.message;
                 errorMsg.classList.remove('hidden');
                 
@@ -346,7 +331,6 @@
             }
         }
 
-        // 캡처 후 고화질 이미지로 다운로드 하는 기능
         async function downloadBanner() {
             const dlBtn = document.getElementById('downloadBtn');
             const originalHtml = dlBtn.innerHTML;
@@ -354,13 +338,11 @@
             dlBtn.disabled = true;
 
             try {
-                // html2canvas로 캡처 영역을 고해상도로 캡처
                 const canvas = await html2canvas(document.getElementById('captureArea'), {
-                    useCORS: true, // 외부 이미지(배경) 허용
-                    scale: 3 // 고화질 출력을 위해 스케일 3배 적용
+                    useCORS: true, 
+                    scale: 3 
                 });
                 
-                // 이미지 파일로 다운로드
                 const link = document.createElement('a');
                 link.download = '짓마케팅_현수막시안.jpg';
                 link.href = canvas.toDataURL('image/jpeg', 0.9);
