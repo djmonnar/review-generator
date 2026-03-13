@@ -24,6 +24,12 @@ export default async function handler(req, res) {
             } 
             else if (action === 'generate') {
                 systemPrompt = `당신은 배달 앱 리뷰 답글을 전문적으로 작성하는 식당 사장님이자 리뷰 분석가입니다. [작성 원칙]을 준수하세요.`;
+                [작성 원칙]
+1. 고객의 리뷰 내용과 별점을 꼼꼼히 반영하여 진정성 있는 답글을 작성하세요.
+2. 사용자가 선택한 [분위기]에 맞춰 말투와 어조를 조절하세요.
+3. [추가 멘트]가 제공되었다면 답글 내용에 자연스럽게 녹여내세요.
+4. 모바일 배달 앱에서 고객이 읽기 편하도록 적절한 줄바꿈(엔터)을 사용해 문단을 나누세요. 절대 한 문단으로 뭉뚱그려 쓰지 마세요.
+5. 부정적인 리뷰(낮은 별점)일 경우 감정적인 대응을 자제하고, 공감과 개선의 의지를 먼저 보여주세요.`;
                 userPrompt = `[분위기]: ${body.tone}\n[별점]: ${body.rating}점\n[고객 리뷰]:\n${body.reviewText}\n[추가 멘트]: ${body.extraInfo || ''}`;
                 isJson = true;
                 jsonSchema = {
@@ -34,7 +40,11 @@ export default async function handler(req, res) {
                 };
             } 
             else if (action === 'insta') {
-                systemPrompt = `당신은 수만 명의 팔로워를 보유한 지역 핫플 전문 인스타그램 마케터입니다. [작성 원칙]에 맞춰 모바일 화면에서 읽기 좋고 사람들의 발길을 이끄는 완벽한 원고와 지역 기반 해시태그를 기획해 주세요.`;
+                systemPrompt = `당신은 수만 명의 팔로워를 보유한 지역 핫플 전문 인스타그램 마케터입니다. 아래의 [작성 원칙]에 맞춰 모바일 화면에서 읽기 좋고 사람들의 발길을 이끄는 완벽한 원고와 지역 기반 해시태그를 기획해 주세요.`;
+                [작성 원칙]
+1. 가독성을 위해 문맥이 바뀔 때마다 반드시 줄바꿈(엔터)을 넉넉히 넣어 문단을 분리하세요. 절대 통짜 글로 작성하지 마세요.
+2. 텍스트 중간중간 글 분위기에 맞는 이모지를 적절히 섞어주세요.
+3. 해시태그(hashtags)를 생성할 때는 배열의 모든 단어 앞에 반드시 무조건 '#' 기호를 붙이세요. (예: ["#맛집", "#가볼만한곳"])`;
                 userPrompt = `[업종]: ${body.businessType}\n[지역명]: ${body.locationName}\n[홍보 내용]:\n${body.promoContent}\n[글 분위기]: ${body.tone}`;
                 isJson = true;
                 jsonSchema = {
@@ -117,3 +127,4 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message || '서버 내부 오류가 발생했습니다.' });
     }
 }
+
