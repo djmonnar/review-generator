@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ error: 'POST 요청만 허용됩니다.' });
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -31,9 +31,10 @@ export default async function handler(req, res) {
 3. [추가 멘트]가 제공되었다면 답글 내용에 자연스럽게 녹여내세요.
 4. 모바일 배달 앱에서 고객이 읽기 편하도록 적절한 줄바꿈(엔터)을 사용해 문단을 나누세요. 절대 한 문단으로 뭉뚱그려 쓰지 마세요.
 5. 부정적인 리뷰(낮은 별점)일 경우 감정적인 대응을 자제하고, 공감과 개선의 의지를 먼저 보여주세요.
-6. 글은 6줄이상 넘기지 말것
+6. 글은 7줄이상 넘기지 말것
 7. 과도한 오버 하지 말것
-8. 고객의 개인정보를 요구하거나 쓸데없는 질문은 금지`;
+8. 고객의 개인정보를 요구하거나 쓸데없는 질문은 금지`; // <--- 백틱(`)으로 정상적으로 수정됨
+
                 userPrompt = `[분위기]: ${body.tone}\n[별점]: ${body.rating}점\n[고객 리뷰]:\n${body.reviewText}\n[추가 멘트]: ${body.extraInfo || ''}`;
                 isJson = true;
                 jsonSchema = {
@@ -53,6 +54,7 @@ export default async function handler(req, res) {
 1. 가독성을 위해 문맥이 바뀔 때마다 반드시 줄바꿈(엔터)을 넉넉히 넣어 문단을 분리하세요. 절대 통짜 글로 작성하지 마세요.
 2. 텍스트 중간중간 글 분위기에 맞는 이모지를 적절히 섞어주세요.
 3. 해시태그(hashtags)를 생성할 때는 배열의 모든 단어 앞에 반드시 무조건 '#' 기호를 붙이세요. (예: ["#맛집", "#가볼만한곳"])`;
+                
                 userPrompt = `[업종]: ${body.businessType}\n[지역명]: ${body.locationName}\n[홍보 내용]:\n${body.promoContent}\n[글 분위기]: ${body.tone}`;
                 isJson = true;
                 jsonSchema = {
